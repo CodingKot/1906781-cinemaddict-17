@@ -1,7 +1,7 @@
 import {createElement} from '../render.js';
 import { changeCommentDateDisplay } from '../utils.js';
 
-const renderComments = (array1, array2) => array1.filter((element) => (array2.includes(element.id))).map((element) => `<li class="film-details__comment">
+const renderComments = (comments) => comments.map((element) => `<li class="film-details__comment">
 <span class="film-details__comment-emoji">
   <img src="./images/emoji/${element.emotion}.png" width="55" height="55" alt="emoji-${element.emotion}">
 </span>
@@ -15,12 +15,12 @@ const renderComments = (array1, array2) => array1.filter((element) => (array2.in
 </div>
 </li>`).join('');
 
-const createCommentsTemplate = (film, comments) =>  (`<div class="film-details__bottom-container">
+const createCommentsTemplate = (comments) =>  (`<div class="film-details__bottom-container">
  <section class="film-details__comments-wrap">
-   <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${film.comments.length}</span></h3>
+   <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
    <ul class="film-details__comments-list">
-      ${renderComments(comments, film.comments)}
+      ${renderComments(comments)}
    </ul>
 
    <div class="film-details__new-comment">
@@ -57,13 +57,12 @@ const createCommentsTemplate = (film, comments) =>  (`<div class="film-details__
 
 export default class CommentsView {
 
-  constructor(film, comments) {
-    this.film = film;
+  constructor(comments) {
     this.comments = comments;
   }
 
   getTemplate () {
-    return createCommentsTemplate (this.film, this.comments);
+    return createCommentsTemplate (this.comments);
   }
 
   getElement () {

@@ -1,4 +1,3 @@
-
 import {createElement} from '../render.js';
 import { changeReleaseDateDisplay, getTimeFromMins, sliceDescription} from '../utils.js';
 

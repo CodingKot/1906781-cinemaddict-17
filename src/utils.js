@@ -1,4 +1,9 @@
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration.js';
+import relativeTime from 'dayjs/plugin/relativeTime.js';
+
+dayjs.extend(relativeTime);
+dayjs.extend(duration);
 
 const sliceDescription = (description) => description.length > 140 ? `${description.slice(0,138)}...` : description;
 
@@ -22,9 +27,10 @@ const changeReleaseDateDisplay = (releaseDate) => dayjs(releaseDate).format('D M
 const changeCommentDateDisplay = (commentDate) => dayjs(commentDate).format('D/MMMM/YYYY hh:mm');
 
 const getTimeFromMins = (mins) => {
-  const hours = Math.trunc(mins/60);
-  const minutes = mins % 60;
+  const {hours, minutes} = dayjs.duration(mins, 'minutes').$d;
   return `${hours}h ${minutes}m`;
 };
 
-export {getRandomInteger, changeReleaseDateDisplay, getTimeFromMins, isGenres, sliceDescription, geneateRandomInfo, getUniqueRandomNumber, changeCommentDateDisplay};
+const filterComments = (commentsId, allComments) => allComments.filter((element) => (commentsId.includes(element.id)));
+
+export {getRandomInteger, changeReleaseDateDisplay, getTimeFromMins, isGenres, sliceDescription, geneateRandomInfo, getUniqueRandomNumber, changeCommentDateDisplay, filterComments};

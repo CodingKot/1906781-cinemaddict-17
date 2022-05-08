@@ -1,3 +1,4 @@
+import {filterComments} from '../utils.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import FilmsSectionView from '../view/films-section-view.js';
 import FilmsListSectionView from '../view/films-list-section-view.js';
@@ -18,7 +19,7 @@ import { render } from '../render.js';
 const START_CARDS_COUNT = 5;
 const EXTRA_CARDS_COUNT = 2;
 
-export default class FilmsPesenter {
+export default class FilmsPresenter {
   sectionComponent = new FilmsSectionView();
   filmsSection = new FilmsListSectionView();
   listHeading = new FilmsListHeadingView();
@@ -38,6 +39,7 @@ export default class FilmsPesenter {
     this.filmsModel = filmsModel;
     this.generatedFilms = [...this.filmsModel.getFilms()];
     this.generatedComments = [...this.filmsModel.getComments()];
+    this.filteredComments = filterComments(this.generatedFilms[0].comments, this.generatedComments);
     render(this.sectionComponent, this.firstContentContainer);
     render(this.filmsSection, this.sectionComponent.getElement());
     render(this.listHeading, this.filmsSection.getElement());
@@ -63,6 +65,7 @@ export default class FilmsPesenter {
     render(this.popup, this.secondContentContainer);
     render(this.form, this.popup.getElement());
     render(new FilmDetailsView(this.generatedFilms[0]), this.form.getElement());
-    render(new CommentsView(this.generatedFilms[0], this.generatedComments), this.form.getElement());
+
+    render(new CommentsView(this.filteredComments), this.form.getElement());
   };
 }

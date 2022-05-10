@@ -1,4 +1,4 @@
-import {filterComments} from '../utils.js';
+
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import FilmsSectionView from '../view/films-section-view.js';
 import FilmsListSectionView from '../view/films-list-section-view.js';
@@ -10,62 +10,90 @@ import TopHeadingView from '../view/top-rated-heading-view.js';
 import CommentedHeadingView from '../view/most-commented-heading-view.js';
 import ExtrasContainerView from '../view/extras-container.js';
 import PopupView from '../view/popup-view.js';
-import FormView from '../view/form-view.js';
-import FilmDetailsView from '../view/film-details-view.js';
-import CommentsView from '../view/comments-view.js';
 
 import { render } from '../render.js';
 
 const START_CARDS_COUNT = 5;
 const EXTRA_CARDS_COUNT = 2;
 
-export default class FilmsPresenter {
-  sectionComponent = new FilmsSectionView();
-  filmsSection = new FilmsListSectionView();
-  listHeading = new FilmsListHeadingView();
-  filmsListContainer = new FilmsListContainerView();
-  showMoreButton = new ShowMoreButtonView();
-  topRatedExtra = new ExtraView();
-  topRatedContainer = new ExtrasContainerView();
-  mostCommentedExtra = new ExtraView();
-  mostCommentedContainer = new ExtrasContainerView();
+const body = document.querySelector('body');
 
+export default class FilmsPresenter {
+  #firstContentContainer = null;
+  #secondContentContainer = null;
+  #filmsModel = null;
+  #popup = null;
+  #sectionComponent = new FilmsSectionView();
+  #filmsSection = new FilmsListSectionView();
+  #listHeading = new FilmsListHeadingView();
+  #filmsListContainer = new FilmsListContainerView();
+  #showMoreButton = new ShowMoreButtonView();
+  #topRatedExtra = new ExtraView();
+  #topRatedContainer = new ExtrasContainerView();
+  #mostCommentedExtra = new ExtraView();
+  #mostCommentedContainer = new ExtrasContainerView();
+  #generatedFilms = [];
+  #generatedComments = [];
 
   init = (firstContentContainer, secondContentContainer, filmsModel) => {
-    this.firstContentContainer = firstContentContainer;
-    this.secondContentContainer = secondContentContainer;
-    this.popup = new PopupView();
-    this.form = new FormView();
-    this.filmsModel = filmsModel;
-    this.generatedFilms = [...this.filmsModel.getFilms()];
-    this.generatedComments = [...this.filmsModel.getComments()];
-    this.filteredComments = filterComments(this.generatedFilms[0].comments, this.generatedComments);
-    render(this.sectionComponent, this.firstContentContainer);
-    render(this.filmsSection, this.sectionComponent.getElement());
-    render(this.listHeading, this.filmsSection.getElement());
-    render(this.filmsListContainer, this.filmsSection.getElement());
+    this.#firstContentContainer = firstContentContainer;
+    this.#secondContentContainer = secondContentContainer;
+    this.#filmsModel = filmsModel;
+    this.#generatedFilms = [...this.#filmsModel.films];
+    this.#generatedComments = [...this.#filmsModel.comments];
+
+    render(this.#sectionComponent, this.#firstContentContainer);
+    render(this.#filmsSection, this.#sectionComponent.element);
+    render(this.#listHeading, this.#filmsSection.element);
+    render(this.#filmsListContainer, this.#filmsSection.element);
 
     for( let i = 0; i < START_CARDS_COUNT; i++) {
-      render(new FilmCardView(this.generatedFilms[i]), this.filmsListContainer.getElement());
+      this.#renderFilm(this.#generatedFilms[i], this.#filmsListContainer.element);
     }
-
-    render(this.showMoreButton, this.filmsSection.getElement());
-    render(this.topRatedExtra, this.sectionComponent.getElement());
-    render(new TopHeadingView(), this.topRatedExtra.getElement());
-    render(this.topRatedContainer, this.topRatedExtra.getElement());
+    render(this.#showMoreButton, this.#filmsSection.element);
+    render(this.#topRatedExtra, this.#sectionComponent.element);
+    render(new TopHeadingView(), this.#topRatedExtra.element);
+    render(this.#topRatedContainer, this.#topRatedExtra.element);
     for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
-      render(new FilmCardView(this.generatedFilms[i]), this.topRatedContainer.getElement());
+      this.#renderFilm(this.#generatedFilms[i], this.#topRatedContainer.element);
     }
-    render(this.mostCommentedExtra, this.sectionComponent.getElement());
-    render(new CommentedHeadingView(), this.mostCommentedExtra.getElement());
-    render(this.mostCommentedContainer, this.mostCommentedExtra.getElement());
+    render(this.#mostCommentedExtra, this.#sectionComponent.element);
+    render(new CommentedHeadingView(), this.#mostCommentedExtra.element);
+    render(this.#mostCommentedContainer, this.#mostCommentedExtra.element);
     for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
-      render(new FilmCardView(this.generatedFilms[i]), this.mostCommentedContainer.getElement());
+      this.#renderFilm(this.#generatedFilms[i], this.#mostCommentedContainer.element);
     }
-    render(this.popup, this.secondContentContainer);
-    render(this.form, this.popup.getElement());
-    render(new FilmDetailsView(this.generatedFilms[0]), this.form.getElement());
+  };
 
-    render(new CommentsView(this.filteredComments), this.form.getElement());
+  #renderFilm = (film, container) => {
+
+    let closeButton = null;
+    const filmCard = new FilmCardView(film);
+    render(filmCard, container);
+
+    const closePopup = () => {
+      this.#secondContentContainer.removeChild(this.#popup.element);
+      body.classList.remove('hide-overflow');
+    };
+
+    const onEscKeyDown = (evt) => {
+      if(evt.key === 'Escape' || evt.key === 'Esc') {
+        closePopup();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    const showPopup = () => {
+      const filmId = +(filmCard.element.querySelector('.film-card__id').textContent);
+      const selectedFilm = this.#generatedFilms.find((item) => item.id === filmId);
+      this.#popup = new PopupView(selectedFilm, this.#generatedComments);
+      render(this.#popup, this.#secondContentContainer);
+      body.classList.add('hide-overflow');
+      closeButton = this.#popup.element.querySelector('.film-details__close-btn');
+      closeButton.addEventListener('click', closePopup);
+      document.addEventListener('keydown', onEscKeyDown);
+    };
+
+    filmCard.element.addEventListener('click', showPopup);
   };
 }

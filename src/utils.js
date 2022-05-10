@@ -31,6 +31,6 @@ const getTimeFromMins = (mins) => {
   return `${hours}h ${minutes}m`;
 };
 
-const filterComments = (commentsId, allComments) => allComments.filter((element) => (commentsId.includes(element.id)));
 
-export {getRandomInteger, changeReleaseDateDisplay, getTimeFromMins, isGenres, sliceDescription, geneateRandomInfo, getUniqueRandomNumber, changeCommentDateDisplay, filterComments};
+
+export {getRandomInteger, changeReleaseDateDisplay, getTimeFromMins, isGenres, sliceDescription, geneateRandomInfo, getUniqueRandomNumber, changeCommentDateDisplay};

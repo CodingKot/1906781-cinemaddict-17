@@ -1,4 +1,3 @@
-
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import FilmsSectionView from '../view/films-section-view.js';
 import FilmsListSectionView from '../view/films-list-section-view.js';
@@ -16,11 +15,9 @@ import { render } from '../render.js';
 const START_CARDS_COUNT = 5;
 const EXTRA_CARDS_COUNT = 2;
 
-const body = document.querySelector('body');
-
 export default class FilmsPresenter {
-  #firstContentContainer = null;
-  #secondContentContainer = null;
+  #mainContentContainer = null;
+  #bodyContentContainer = null;
   #filmsModel = null;
   #popup = null;
   #sectionComponent = new FilmsSectionView();
@@ -35,14 +32,14 @@ export default class FilmsPresenter {
   #generatedFilms = [];
   #generatedComments = [];
 
-  init = (firstContentContainer, secondContentContainer, filmsModel) => {
-    this.#firstContentContainer = firstContentContainer;
-    this.#secondContentContainer = secondContentContainer;
+  init = (mainContentContainer, bodyContentContainer, filmsModel) => {
+    this.#mainContentContainer = mainContentContainer;
+    this.#bodyContentContainer = bodyContentContainer;
     this.#filmsModel = filmsModel;
     this.#generatedFilms = [...this.#filmsModel.films];
     this.#generatedComments = [...this.#filmsModel.comments];
 
-    render(this.#sectionComponent, this.#firstContentContainer);
+    render(this.#sectionComponent, this.#mainContentContainer);
     render(this.#filmsSection, this.#sectionComponent.element);
     render(this.#listHeading, this.#filmsSection.element);
     render(this.#filmsListContainer, this.#filmsSection.element);
@@ -72,8 +69,9 @@ export default class FilmsPresenter {
     render(filmCard, container);
 
     const closePopup = () => {
-      this.#secondContentContainer.removeChild(this.#popup.element);
-      body.classList.remove('hide-overflow');
+      this.#popup.element.remove();
+      this.#popup.removeElement();
+      this.#bodyContentContainer.classList.remove('hide-overflow');
     };
 
     const onEscKeyDown = (evt) => {
@@ -84,11 +82,14 @@ export default class FilmsPresenter {
     };
 
     const showPopup = () => {
+      if (this.#bodyContentContainer.classList.contains('hide-overflow')) {
+        closePopup();
+      }
       const filmId = +(filmCard.element.querySelector('.film-card__id').textContent);
       const selectedFilm = this.#generatedFilms.find((item) => item.id === filmId);
       this.#popup = new PopupView(selectedFilm, this.#generatedComments);
-      render(this.#popup, this.#secondContentContainer);
-      body.classList.add('hide-overflow');
+      render(this.#popup, this.#bodyContentContainer);
+      this.#bodyContentContainer.classList.add('hide-overflow');
       closeButton = this.#popup.element.querySelector('.film-details__close-btn');
       closeButton.addEventListener('click', closePopup);
       document.addEventListener('keydown', onEscKeyDown);

@@ -31,6 +31,4 @@ const getTimeFromMins = (mins) => {
   return `${hours}h ${minutes}m`;
 };
 
-
-
 export {getRandomInteger, changeReleaseDateDisplay, getTimeFromMins, isGenres, sliceDescription, geneateRandomInfo, getUniqueRandomNumber, changeCommentDateDisplay};

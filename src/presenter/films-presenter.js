@@ -94,7 +94,6 @@ export default class FilmsPresenter {
       closeButton.addEventListener('click', closePopup);
       document.addEventListener('keydown', onEscKeyDown);
     };
-
     filmCard.element.addEventListener('click', showPopup);
   };
 }

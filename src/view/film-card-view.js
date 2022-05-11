@@ -2,7 +2,7 @@ import {createElement} from '../render.js';
 import { changeReleaseDateDisplay, getTimeFromMins, sliceDescription} from '../utils.js';
 
 const createFilmCardTemplate = (film) => {
-  const {comments, filmInfo} = film;
+  const {id,comments, filmInfo} = film;
   const releaseDate = filmInfo.release.date !== null ? changeReleaseDateDisplay(filmInfo.release.date) : '';
   const runtime = getTimeFromMins(filmInfo.runtime);
   return (`<article class="film-card">
@@ -13,6 +13,7 @@ const createFilmCardTemplate = (film) => {
       <span class="film-card__year">${releaseDate}</span>
       <span class="film-card__duration">${runtime}</span>
       <span class="film-card__genre">${filmInfo.genre}</span>
+      <span class="film-card__id" hidden>${id}</span>
     </p>
     <img src=${filmInfo.poster} alt="" class="film-card__poster">
     <p class="film-card__description">${sliceDescription(filmInfo.description)}</p>
@@ -28,22 +29,24 @@ const createFilmCardTemplate = (film) => {
 
 
 export default class FilmCardView {
+  #element = null;
+  #film = null;
   constructor(film) {
-    this.film = film;
+    this.#film = film;
   }
 
-  getTemplate () {
-    return createFilmCardTemplate (this.film);
+  get template () {
+    return createFilmCardTemplate (this.#film);
   }
 
-  getElement () {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element () {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
-    return this.element;
+    return this.#element;
   }
 
   removeElement () {
-    this.element = null;
+    this.#element = null;
   }
 }

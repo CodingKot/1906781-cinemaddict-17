@@ -10,9 +10,9 @@ const siteMainElement = document.querySelector('.main');
 const bodyElement = document.querySelector('body');
 const filmsModel = new FilmsModel();
 
-const filmsPresenter = new FilmsPresenter();
+const filmsPresenter = new FilmsPresenter(siteMainElement, bodyElement, filmsModel);
 render(new ProfileView(), siteHeaderElement);
 render(new NavigationView(), siteMainElement);
 render(new SortView(), siteMainElement);
 
-filmsPresenter.init(siteMainElement, bodyElement, filmsModel);
+filmsPresenter.init();

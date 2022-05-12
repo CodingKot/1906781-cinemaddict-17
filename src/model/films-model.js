@@ -1,7 +1,7 @@
 import { generateFilm } from '../mock/film';
 import { generateComment } from '../mock/comments.js';
 
-const FILMS_NUMBER = 25;
+const FILMS_NUMBER = 26;
 
 
 export default class FilmsModel {

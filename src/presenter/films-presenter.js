@@ -9,11 +9,12 @@ import TopHeadingView from '../view/top-rated-heading-view.js';
 import CommentedHeadingView from '../view/most-commented-heading-view.js';
 import ExtrasContainerView from '../view/extras-container.js';
 import PopupView from '../view/popup-view.js';
+import NoFilmsView from '../view/no-films-view.js';
 
 import { render } from '../render.js';
 
-const START_CARDS_COUNT = 5;
 const EXTRA_CARDS_COUNT = 2;
+const FILMS_COUNT_PER_STEP = 5;
 
 export default class FilmsPresenter {
   #mainContentContainer = null;
@@ -31,34 +32,64 @@ export default class FilmsPresenter {
   #mostCommentedContainer = new ExtrasContainerView();
   #generatedFilms = [];
   #generatedComments = [];
+  #renderedFilmCount = FILMS_COUNT_PER_STEP;
 
-  init = (mainContentContainer, bodyContentContainer, filmsModel) => {
+  constructor(mainContentContainer, bodyContentContainer, filmsModel) {
     this.#mainContentContainer = mainContentContainer;
     this.#bodyContentContainer = bodyContentContainer;
     this.#filmsModel = filmsModel;
+  }
+
+  init = () => {
     this.#generatedFilms = [...this.#filmsModel.films];
     this.#generatedComments = [...this.#filmsModel.comments];
+    this.#renderContent();
+  };
 
+  #renderContent = () => {
     render(this.#sectionComponent, this.#mainContentContainer);
     render(this.#filmsSection, this.#sectionComponent.element);
     render(this.#listHeading, this.#filmsSection.element);
     render(this.#filmsListContainer, this.#filmsSection.element);
 
-    for( let i = 0; i < START_CARDS_COUNT; i++) {
-      this.#renderFilm(this.#generatedFilms[i], this.#filmsListContainer.element);
+    if(this.#generatedFilms.length === 0) {
+      render(new NoFilmsView(), this.#filmsSection.element);
+    } else {
+      for( let i = 0; i < Math.min(this.#generatedFilms.length, FILMS_COUNT_PER_STEP); i++) {
+        this.#renderFilm(this.#generatedFilms[i], this.#filmsListContainer.element);
+      }
+
+      if(this.#generatedFilms.length > FILMS_COUNT_PER_STEP) {
+        render(this.#showMoreButton, this.#filmsSection.element);
+
+        this.#showMoreButton.element.addEventListener('click', this.#handleShowMoreButtonClick);
+      }
+      render(this.#topRatedExtra, this.#sectionComponent.element);
+      render(new TopHeadingView(), this.#topRatedExtra.element);
+      render(this.#topRatedContainer, this.#topRatedExtra.element);
+      for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
+        this.#renderFilm(this.#generatedFilms[i], this.#topRatedContainer.element);
+      }
+      render(this.#mostCommentedExtra, this.#sectionComponent.element);
+      render(new CommentedHeadingView(), this.#mostCommentedExtra.element);
+      render(this.#mostCommentedContainer, this.#mostCommentedExtra.element);
+      for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
+        this.#renderFilm(this.#generatedFilms[i], this.#mostCommentedContainer.element);
+      }
     }
-    render(this.#showMoreButton, this.#filmsSection.element);
-    render(this.#topRatedExtra, this.#sectionComponent.element);
-    render(new TopHeadingView(), this.#topRatedExtra.element);
-    render(this.#topRatedContainer, this.#topRatedExtra.element);
-    for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
-      this.#renderFilm(this.#generatedFilms[i], this.#topRatedContainer.element);
-    }
-    render(this.#mostCommentedExtra, this.#sectionComponent.element);
-    render(new CommentedHeadingView(), this.#mostCommentedExtra.element);
-    render(this.#mostCommentedContainer, this.#mostCommentedExtra.element);
-    for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
-      this.#renderFilm(this.#generatedFilms[i], this.#mostCommentedContainer.element);
+  };
+
+  #handleShowMoreButtonClick = (evt) => {
+    evt.preventDefault();
+    this.#generatedFilms
+      .slice(this.#renderedFilmCount, this.#renderedFilmCount + FILMS_COUNT_PER_STEP)
+      .forEach((film) => this.#renderFilm(film, this.#filmsListContainer.element));
+
+    this.#renderedFilmCount += FILMS_COUNT_PER_STEP;
+
+    if(this.#renderedFilmCount >= this.#generatedFilms.length) {
+      this.#showMoreButton.element.remove();
+      this.#showMoreButton.removeElement();
     }
   };
 
@@ -94,6 +125,7 @@ export default class FilmsPresenter {
       closeButton.addEventListener('click', closePopup);
       document.addEventListener('keydown', onEscKeyDown);
     };
+
     filmCard.element.addEventListener('click', showPopup);
   };
 }

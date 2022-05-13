@@ -11,7 +11,7 @@ import ExtrasContainerView from '../view/extras-container.js';
 import PopupView from '../view/popup-view.js';
 import NoFilmsView from '../view/no-films-view.js';
 
-import { render } from '../render.js';
+import {render, remove} from '../framework/render.js';
 
 const EXTRA_CARDS_COUNT = 2;
 const FILMS_COUNT_PER_STEP = 5;
@@ -62,25 +62,24 @@ export default class FilmsPresenter {
       if(this.#generatedFilms.length > FILMS_COUNT_PER_STEP) {
         render(this.#showMoreButton, this.#filmsSection.element);
 
-        this.#showMoreButton.element.addEventListener('click', this.#handleShowMoreButtonClick);
+        this.#showMoreButton.setClickHandler(this.#handleShowMoreButtonClick);
       }
       render(this.#topRatedExtra, this.#sectionComponent.element);
       render(new TopHeadingView(), this.#topRatedExtra.element);
       render(this.#topRatedContainer, this.#topRatedExtra.element);
-      for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
+      for (let i = 0; i < Math.min(this.#generatedFilms.length, EXTRA_CARDS_COUNT); i++) {
         this.#renderFilm(this.#generatedFilms[i], this.#topRatedContainer.element);
       }
       render(this.#mostCommentedExtra, this.#sectionComponent.element);
       render(new CommentedHeadingView(), this.#mostCommentedExtra.element);
       render(this.#mostCommentedContainer, this.#mostCommentedExtra.element);
-      for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
+      for (let i = 0; i < Math.min(this.#generatedFilms.length, EXTRA_CARDS_COUNT); i++) {
         this.#renderFilm(this.#generatedFilms[i], this.#mostCommentedContainer.element);
       }
     }
   };
 
-  #handleShowMoreButtonClick = (evt) => {
-    evt.preventDefault();
+  #handleShowMoreButtonClick = () => {
     this.#generatedFilms
       .slice(this.#renderedFilmCount, this.#renderedFilmCount + FILMS_COUNT_PER_STEP)
       .forEach((film) => this.#renderFilm(film, this.#filmsListContainer.element));
@@ -88,8 +87,7 @@ export default class FilmsPresenter {
     this.#renderedFilmCount += FILMS_COUNT_PER_STEP;
 
     if(this.#renderedFilmCount >= this.#generatedFilms.length) {
-      this.#showMoreButton.element.remove();
-      this.#showMoreButton.removeElement();
+      remove(this.#showMoreButton);
     }
   };
 
@@ -100,8 +98,7 @@ export default class FilmsPresenter {
     render(filmCard, container);
 
     const closePopup = () => {
-      this.#popup.element.remove();
-      this.#popup.removeElement();
+      remove(this.#popup);
       this.#bodyContentContainer.classList.remove('hide-overflow');
     };
 
@@ -126,6 +123,6 @@ export default class FilmsPresenter {
       document.addEventListener('keydown', onEscKeyDown);
     };
 
-    filmCard.element.addEventListener('click', showPopup);
+    filmCard.setFilmDetailsHandler(showPopup);
   };
 }

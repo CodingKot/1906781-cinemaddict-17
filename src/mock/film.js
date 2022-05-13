@@ -1,8 +1,8 @@
-import {getRandomInteger, geneateRandomInfo, getUniqueRandomNumber} from '../utils';
+import {getRandomInteger, geneateRandomInfo, getUniqueRandomNumber} from '../utils/common.js';
 
 const RUNTIMES = [100, 90, 170, 69, 76, 98];
 
-const FILMS_NUMBER = 26;
+export const FILMS_NUMBER = 26;
 
 const GENRES = [
   'Comedy',

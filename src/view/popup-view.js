@@ -1,6 +1,5 @@
-import {createElement} from '../render.js';
-import { changeReleaseDateDisplay, getTimeFromMins, isGenres} from '../utils.js';
-import { changeCommentDateDisplay } from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import { changeReleaseDateDisplay, getTimeFromMins, isGenres, changeCommentDateDisplay} from '../utils/film-details.js';
 
 const renderGenres = (string, bool) => {
   if(!bool) {
@@ -145,28 +144,18 @@ const createPopupTemplate = (film, filmComments) =>  {
 };
 
 
-export default class PopupView {
-  #element = null;
+export default class PopupView extends AbstractView {
+
   #film = null;
   #filmComments = null;
 
   constructor(film, filmComments) {
+    super();
     this.#film = film;
     this.#filmComments = filmComments;
   }
 
   get template () {
     return createPopupTemplate (this.#film, this.#filmComments);
-  }
-
-  get element () {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
-
-  removeElement () {
-    this.#element = null;
   }
 }

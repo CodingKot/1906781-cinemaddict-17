@@ -1,21 +1,9 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createHeadingTemplate = () => '<h2 class="films-list__title">Top rated</h2>';
 
-export default class TopHeadingView {
-  #element = null;
+export default class TopHeadingView extends AbstractView {
   get template () {
     return createHeadingTemplate ();
-  }
-
-  get element () {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
-
-  removeElement () {
-    this.#element = null;
   }
 }

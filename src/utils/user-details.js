@@ -1,13 +1,14 @@
 const FilterType = {
-  ALREADY_WATCHED : 'alreadyWatched',
+  WATCHLIST: 'watchlist',
+  HISTORY : 'history',
   FAVORITE: 'favorite',
-  WATCHLIST: 'watchlist'
+
 };
 
 const filter = {
-  [FilterType.ALREADY_WATCHED] : (films) => films.filter((film) => film.userDetails.alreadyWatched),
+  [FilterType.WATCHLIST] : (films) => films.filter((film) => film.userDetails.watchlist),
   [FilterType.FAVORITE] : (films) => films.filter((film) => film.userDetails.favorite),
-  [FilterType.WATCHLIST] : (films) => films.filter((film) => film.userDetails.watchlist)
+  [FilterType.HISTORY] : (films) => films.filter((film) => film.userDetails.alreadyWatched)
 };
 
 export {filter};

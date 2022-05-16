@@ -12,4 +12,6 @@ const geneateRandomInfo = (items) => {
   return items[randomIndex];
 };
 
-export {getRandomInteger, getUniqueRandomNumber, geneateRandomInfo};
+const firstToUpper = (string) => string.charAt(0).toUpperCase() + string.slice(1);
+
+export {getRandomInteger, getUniqueRandomNumber, geneateRandomInfo, firstToUpper};

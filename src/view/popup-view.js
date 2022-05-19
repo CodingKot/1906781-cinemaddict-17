@@ -95,7 +95,7 @@ const createPopupTemplate = (film, filmComments) =>  {
 
       <section class="film-details__controls">
         <button type="button" class="film-details__control-button film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
-        <button type="button" class="film-details__control-button film-details__control-button--active film-details__control-button--watched" id="watched" name="watched">Already watched</button>
+        <button type="button" class="film-details__control-button film-details__control-button--watched" id="watched" name="watched">Already watched</button>
         <button type="button" class="film-details__control-button film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
       </section>
     </div>
@@ -158,4 +158,35 @@ export default class PopupView extends AbstractView {
   get template () {
     return createPopupTemplate (this.#film, this.#filmComments);
   }
+
+  setPopupFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteClickHandler);
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  };
+
+  setPopupAddToWatchlistClickHandler = (callback) => {
+    this._callback.watchlistClick = callback;
+    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#watchlistClickHandler);
+  };
+
+  #watchlistClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.watchlistClick();
+  };
+
+  setPopupWatchedClickHandler = (callback) => {
+    this._callback.watched = callback;
+    this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#watchedClickHandler);
+  };
+
+  #watchedClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.watched();
+  };
+
 }

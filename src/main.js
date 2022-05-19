@@ -1,7 +1,7 @@
 import ProfileView from './view/profile-view';
 import FilterView from './view/filter-view.js';
-import SortView from './view/sort-view.js';
-import FilmsPresenter from './presenter/films-presenter.js';
+
+import FilmsPresenter from './presenter/content-presenter.js';
 import FilmsModel from './model/films-model.js';
 import {render} from './framework/render.js';
 import { generateFilter } from './mock/filter.js';
@@ -18,7 +18,7 @@ const filters = generateFilter(filmsModel.films);
 
 render(new ProfileView(), siteHeaderElement);
 render(new FilterView(filters), siteMainElement);
-render(new SortView(), siteMainElement);
+
 
 filmsPresenter.init();
 

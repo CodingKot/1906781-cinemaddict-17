@@ -15,7 +15,7 @@ import { updateItem } from '../utils/common.js';
 
 import {render, remove} from '../framework/render.js';
 
-const EXTRA_CARDS_COUNT = 2;
+// const EXTRA_CARDS_COUNT = 2;
 const FILMS_COUNT_PER_STEP = 5;
 
 export default class FilmsPresenter {
@@ -51,10 +51,9 @@ export default class FilmsPresenter {
     this.#filmCardPresenter.forEach((presenter) => presenter.resetView());
   };
 
-  #handleFilmChange = (updatedFilm, container) => {
+  #handleFilmChange = (updatedFilm) => {
     this.#generatedFilms = updateItem(this.#generatedFilms, updatedFilm);
-    this.#filmCardPresenter.get(updatedFilm.id).init(updatedFilm, container);
-
+    this.#filmCardPresenter.get(updatedFilm.id).init(updatedFilm);
   };
 
   #renderSort = () => {
@@ -99,17 +98,17 @@ export default class FilmsPresenter {
     if(this.#generatedFilms.length === 0) {
       this.#renderNoFilmView();
     } else {
-      this.#renderFilms(0, Math.min(this.#generatedFilms.length, FILMS_COUNT_PER_STEP), this.#filmsListContainer.element);
+      this.#renderFilms(0, Math.min(this.#generatedFilms.length, FILMS_COUNT_PER_STEP));
 
       if(this.#generatedFilms.length > FILMS_COUNT_PER_STEP) {
         this.#renderShowMoreButton();
       }
 
-      this.#renderTopRatedContainer();
-      this.#renderFilms(0, Math.min(this.#generatedFilms.length, EXTRA_CARDS_COUNT), this.#topRatedContainer.element);
+      // this.#renderTopRatedContainer();
+      // this.#renderFilms(0, Math.min(this.#generatedFilms.length, EXTRA_CARDS_COUNT), this.#topRatedContainer.element);
 
-      this.#renderMostCommentedContainer();
-      this.#renderFilms(0, Math.min(this.#generatedFilms.length, EXTRA_CARDS_COUNT), this.#mostCommentedContainer.element);
+      // this.#renderMostCommentedContainer();
+      // this.#renderFilms(0, Math.min(this.#generatedFilms.length, EXTRA_CARDS_COUNT), this.#mostCommentedContainer.element);
     }
   };
 
@@ -143,9 +142,9 @@ export default class FilmsPresenter {
     }
   };
 
-  #renderFilm = (film, container) => {
-    const filmCardPresenter = new FilmCardPresenter(this.#mainContentContainer, this.#bodyContentContainer, this.#generatedFilms, this.#generatedComments, this.#handleFilmChange, this.#handleModeChange);
-    filmCardPresenter.init(film, container);
+  #renderFilm = (film) => {
+    const filmCardPresenter = new FilmCardPresenter(this.#filmsListContainer.element, this.#bodyContentContainer, this.#generatedComments, this.#handleFilmChange, this.#handleModeChange);
+    filmCardPresenter.init(film);
     this.#filmCardPresenter.set(film.id, filmCardPresenter);
   };
 

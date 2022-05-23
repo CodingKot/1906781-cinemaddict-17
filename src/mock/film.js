@@ -1,4 +1,4 @@
-import {getRandomInteger, geneateRandomInfo, getUniqueRandomNumber, } from '../utils/common.js';
+import {getRandomInteger, geneateRandomInfo, getUniqueRandomNumber} from '../utils/common.js';
 
 const RUNTIMES = [100, 90, 170, 69, 76, 98];
 
@@ -51,8 +51,6 @@ const WRITERS = [
   'Heinz Herald, Anne Wigton, John Johnson, Richard Weil'
 ];
 
-export const BOOLS = [true, false];
-
 const filmsId = Array.from({length: FILMS_NUMBER}, (number, index) => index);
 const numbers = Array.from({length: 1000}, (number, index) => index);
 const getCommentsIdArray = (items) => items.splice(0, getRandomInteger(1, 20));
@@ -80,9 +78,9 @@ export const generateFilm = () => ({
     description: geneateRandomInfo(DESCRIPTIONS),
   },
   userDetails: {
-    watchlist: Boolean(getRandomInteger(0,1)),
-    alreadyWatched: Boolean(getRandomInteger(0,1)),
+    watchlist: false,
+    alreadyWatched: false,
     watchingDate: null,
-    favorite: Boolean(getRandomInteger(0,1))
+    favorite: false
   }
 });

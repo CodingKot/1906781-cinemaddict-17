@@ -17,4 +17,7 @@ const getTimeFromMins = (mins) => {
   return `${hours}h ${minutes}m`;
 };
 
-export {changeReleaseDateDisplay, getTimeFromMins, isGenres, sliceDescription, changeCommentDateDisplay};
+const compareRatings = (ratingA, ratingB) => ratingB.filmInfo.totalRating - ratingA.filmInfo.totalRating;
+const compareDates = (dateA, dateB) => dayjs(dateB.filmInfo.release.date) - dayjs(dateA.filmInfo.release.date);
+
+export {changeReleaseDateDisplay, getTimeFromMins, isGenres, sliceDescription, changeCommentDateDisplay, compareRatings, compareDates};

@@ -11,9 +11,12 @@ import ExtrasContainerView from '../view/extras-container.js';
 import NoFilmsView from '../view/no-films-view.js';
 
 import FilmCardPresenter from './film-card-presenter.js';
-import { updateItem } from '../utils/common.js';
+import {updateItem} from '../utils/common.js';
+import {compareRatings, compareDates} from '../utils/film-details.js';
+import {SortType} from '../view/sort-view.js';
 
-import {render, remove} from '../framework/render.js';
+import {render, remove, replace} from '../framework/render.js';
+
 
 // const EXTRA_CARDS_COUNT = 2;
 const FILMS_COUNT_PER_STEP = 5;
@@ -22,7 +25,7 @@ export default class FilmsPresenter {
   #mainContentContainer = null;
   #bodyContentContainer = null;
   #filmsModel = null;
-  #sortComponent = new SortView();
+  #sortComponent = null;
   #noFilmView = new NoFilmsView();
   #sectionComponent = new FilmsSectionView();
   #filmsSection = new FilmsListSectionView();
@@ -38,6 +41,8 @@ export default class FilmsPresenter {
   #mostCommentedContainer = new ExtrasContainerView();
   #generatedFilms = [];
   #generatedComments = [];
+  #currentSortType = SortType.DEFAULT;
+  #sourcedFilms = [];
   #renderedFilmCount = FILMS_COUNT_PER_STEP;
   #filmCardPresenter = new Map();
 
@@ -53,11 +58,47 @@ export default class FilmsPresenter {
 
   #handleFilmChange = (updatedFilm) => {
     this.#generatedFilms = updateItem(this.#generatedFilms, updatedFilm);
+    this.#sourcedFilms = updateItem(this.#sourcedFilms, updatedFilm);
     this.#filmCardPresenter.get(updatedFilm.id).init(updatedFilm);
   };
 
+  #sortFilms = (sortType) => {
+    switch(sortType) {
+      case SortType.RATING:
+        this.#generatedFilms.sort(compareRatings);
+        break;
+      case SortType.DATE:
+        this.#generatedFilms.sort(compareDates);
+        break;
+      default:
+        this.#generatedFilms = [...this.#sourcedFilms];
+    }
+    this.#currentSortType = sortType;
+  };
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+    this.#sortFilms(sortType);
+    this.#clearFilmsList();
+    this.#renderFilmsList();
+    this.#renderSort();
+  };
+
   #renderSort = () => {
-    render(this.#sortComponent, this.#mainContentContainer);
+    const prevSort = this.#sortComponent;
+    this.#sortComponent = new SortView();
+    if(prevSort === null) {
+      render(this.#sortComponent, this.#mainContentContainer);
+      this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
+      return;
+    }
+    if(this.#mainContentContainer.contains(prevSort.element)){
+      replace(this.#sortComponent, prevSort);
+      this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
+    }
+    remove(prevSort);
   };
 
   #renderFilmsContainer = () => {
@@ -122,6 +163,7 @@ export default class FilmsPresenter {
   init = () => {
     this.#generatedFilms = [...this.#filmsModel.films];
     this.#generatedComments = [...this.#filmsModel.comments];
+    this.#sourcedFilms = [...this.#filmsModel.films];
     this.#renderContent();
   };
 

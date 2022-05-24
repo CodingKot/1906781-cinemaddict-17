@@ -51,6 +51,19 @@ const WRITERS = [
   'Heinz Herald, Anne Wigton, John Johnson, Richard Weil'
 ];
 
+const RELEASE_DATES = [
+  '2010-08-19T00:00:00.000Z',
+  '2019-05-11T00:00:00.000Z',
+  '2000-12-01T00:00:00.000Z',
+  '2008-01-13T00:00:00.000Z',
+  '2002-05-14T00:00:00.000Z',
+  '1999-04-13T00:00:00.000Z',
+  '2019-02-26T00:00:00.000Z',
+  '2013-10-28T00:00:00.000Z',
+  '2003-05-10T00:00:00.000Z',
+  '1986-11-18T00:00:00.000Z'
+];
+
 const filmsId = Array.from({length: FILMS_NUMBER}, (number, index) => index);
 const numbers = Array.from({length: 1000}, (number, index) => index);
 const getCommentsIdArray = (items) => items.splice(0, getRandomInteger(1, 20));
@@ -70,7 +83,7 @@ export const generateFilm = () => ({
       'Morgan Freeman'
     ],
     release: {
-      date: '2019-05-11T00:00:00.000Z',
+      date: geneateRandomInfo(RELEASE_DATES),
       releaseCountry: 'Finland'
     },
     runtime: geneateRandomInfo(RUNTIMES),
@@ -78,9 +91,9 @@ export const generateFilm = () => ({
     description: geneateRandomInfo(DESCRIPTIONS),
   },
   userDetails: {
-    watchlist: false,
-    alreadyWatched: false,
+    watchlist: Boolean(getRandomInteger(0,1)),
+    alreadyWatched: Boolean(getRandomInteger(0,1)),
     watchingDate: null,
-    favorite: false
+    favorite: Boolean(getRandomInteger(0,1))
   }
 });

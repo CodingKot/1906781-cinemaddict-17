@@ -4,7 +4,7 @@ import {render, replace, remove} from '../framework/render.js';
 
 const PopupMode = {
   OPEN: 'OPEN',
-  CLOSED: 'CLoSED'
+  CLOSED: 'CLOSED'
 };
 
 export default class FilmCardPresenter {
@@ -29,7 +29,6 @@ export default class FilmCardPresenter {
 
   init = (film) => {
     this.#film = film;
-
     const prevfilmComponent = this.#filmComponent;
     const prevPopupComponent = this.#popupComponent;
 

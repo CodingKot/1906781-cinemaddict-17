@@ -88,7 +88,7 @@ export default class FilmsPresenter {
 
   #renderSort = () => {
     const prevSort = this.#sortComponent;
-    this.#sortComponent = new SortView();
+    this.#sortComponent = new SortView(this.#currentSortType);
     if(prevSort === null) {
       render(this.#sortComponent, this.#mainContentContainer);
       this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
@@ -137,6 +137,7 @@ export default class FilmsPresenter {
 
   #renderFilmsList = () => {
     if(this.#generatedFilms.length === 0) {
+      remove(this.#sortComponent);
       this.#renderNoFilmView();
     } else {
       this.#renderFilms(0, Math.min(this.#generatedFilms.length, FILMS_COUNT_PER_STEP));
@@ -189,5 +190,4 @@ export default class FilmsPresenter {
     filmCardPresenter.init(film);
     this.#filmCardPresenter.set(film.id, filmCardPresenter);
   };
-
 }

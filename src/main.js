@@ -6,7 +6,6 @@ import FilmsModel from './model/films-model.js';
 import {render} from './framework/render.js';
 import { generateFilter } from './mock/filter.js';
 
-
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const bodyElement = document.querySelector('body');

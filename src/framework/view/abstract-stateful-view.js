@@ -12,6 +12,7 @@ export default class AbstractStatefulView extends AbstractView {
    * @param {Object} update Объект с обновлённой частью состояния
    */
   updateElement = (update) => {
+
     if (!update) {
       return;
     }
@@ -34,19 +35,22 @@ export default class AbstractStatefulView extends AbstractView {
    * @param {Object} update Объект с обновлённой частью состояния
    */
   _setState = (update) => {
+
     this._state = {...this._state, ...update};
+
   };
 
   /** Метод для перерисовки элемента */
   #rerenderElement = () => {
     const prevElement = this.element;
     const parent = prevElement.parentElement;
+    const scrollPosition = this.element.scrollTop;
     this.removeElement();
 
     const newElement = this.element;
 
     parent.replaceChild(newElement, prevElement);
-
+    this.element.scrollTop = scrollPosition;
     this._restoreHandlers();
   };
 }

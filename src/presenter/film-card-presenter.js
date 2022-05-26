@@ -73,6 +73,7 @@ export default class FilmCardPresenter {
     this.#bodyContentContainer.classList.remove('hide-overflow');
     remove(this.#popupComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#popupComponent.reset(this.#film, this.#comments);
     this.#mode = PopupMode.CLOSED;
   };
 
@@ -121,6 +122,7 @@ export default class FilmCardPresenter {
 
   resetView = () => {
     if(this.#mode !== PopupMode.CLOSED) {
+      this.#popupComponent.reset(this.#film, this.#comments);
       this.#closePopup();
     }
   };

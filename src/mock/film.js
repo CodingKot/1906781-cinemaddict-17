@@ -2,7 +2,7 @@ import {getRandomInteger, geneateRandomInfo, getUniqueRandomNumber} from '../uti
 
 const RUNTIMES = [100, 90, 170, 69, 76, 98];
 
-export const FILMS_NUMBER = 26;
+export const FILMS_NUMBER = 30;
 
 const GENRES = [
   'Comedy',

@@ -9,8 +9,9 @@ const sliceDescription = (description) => description.length > 140 ? `${descript
 
 const isGenres = (string) => string.includes(',');
 
-const changeReleaseDateDisplay = (releaseDate) => dayjs(releaseDate).format('D MMMM YYYY');
-const changeCommentDateDisplay = (commentDate) => dayjs(commentDate).format('D/MMMM/YYYY hh:mm');
+const changeReleaseDateDisplayYears = (releaseDate) => dayjs(releaseDate).format('YYYY');
+const changeReleaseDateDisplay = (releaseDate) => dayjs(releaseDate).format('DD MMMM YYYY');
+const changeCommentDateDisplay = (commentDate) => dayjs(commentDate).fromNow();
 
 const getTimeFromMins = (mins) => {
   const {hours, minutes} = dayjs.duration(mins, 'minutes').$d;
@@ -40,4 +41,4 @@ const compareDates = (dateA, dateB) => {
 };
 
 
-export {changeReleaseDateDisplay, getTimeFromMins, isGenres, sliceDescription, changeCommentDateDisplay, compareRatings, compareDates};
+export {changeReleaseDateDisplayYears, changeReleaseDateDisplay, getTimeFromMins, isGenres, sliceDescription, changeCommentDateDisplay, compareRatings, compareDates};

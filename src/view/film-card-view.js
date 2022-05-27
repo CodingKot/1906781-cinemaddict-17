@@ -1,9 +1,9 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { changeReleaseDateDisplay, getTimeFromMins, sliceDescription} from '../utils/film-details.js';
+import { changeReleaseDateDisplayYears, getTimeFromMins, sliceDescription} from '../utils/film-details.js';
 
 const createFilmCardTemplate = (film) => {
   const {id,comments, filmInfo, userDetails} = film;
-  const releaseDate = filmInfo.release.date !== null ? changeReleaseDateDisplay(filmInfo.release.date) : '';
+  const releaseDate = filmInfo.release.date !== null ? changeReleaseDateDisplayYears(filmInfo.release.date) : '';
   const runtime = getTimeFromMins(filmInfo.runtime);
   return (`<article class="film-card">
   <a class="film-card__link">

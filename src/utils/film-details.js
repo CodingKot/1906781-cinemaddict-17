@@ -17,7 +17,27 @@ const getTimeFromMins = (mins) => {
   return `${hours}h ${minutes}m`;
 };
 
+const getWeightForNullDate = (dateA, dateB) => {
+  if (dateA === null && dateB === null) {
+    return 0;
+  }
+
+  if (dateA === null) {
+    return 1;
+  }
+
+  if (dateB === null) {
+    return -1;
+  }
+
+  return null;
+};
+
 const compareRatings = (ratingA, ratingB) => ratingB.filmInfo.totalRating - ratingA.filmInfo.totalRating;
-const compareDates = (dateA, dateB) => dayjs(dateB.filmInfo.release.date) - dayjs(dateA.filmInfo.release.date);
+const compareDates = (dateA, dateB) => {
+  const weight = getWeightForNullDate(dateA.filmInfo.release.date, dateB.filmInfo.release.date);
+  return weight ?? dayjs(dateB.filmInfo.release.date).diff(dayjs(dateA.filmInfo.release.date));
+};
+
 
 export {changeReleaseDateDisplay, getTimeFromMins, isGenres, sliceDescription, changeCommentDateDisplay, compareRatings, compareDates};

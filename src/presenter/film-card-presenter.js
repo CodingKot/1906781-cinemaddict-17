@@ -1,5 +1,6 @@
 import FilmCardView from '../view/film-card-view.js';
 import PopupView from '../view/popup-view.js';
+import { UserAction, UpdateType } from '../const.js';
 import {render, replace, remove} from '../framework/render.js';
 
 const PopupMode = {
@@ -25,6 +26,7 @@ export default class FilmCardPresenter {
     this.#comments = comments;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
+
   }
 
   init = (film) => {
@@ -34,9 +36,9 @@ export default class FilmCardPresenter {
 
     this.#filmComponent = new FilmCardView(film);
     this.#popupComponent = new PopupView(film, this.#comments);
-
     this.#addFilmComponentListeners();
     this.#addPopupComponentListeners();
+
 
     if(prevfilmComponent === null) {
       render(this.#filmComponent, this.#filmsListContainer);
@@ -73,7 +75,6 @@ export default class FilmCardPresenter {
     this.#bodyContentContainer.classList.remove('hide-overflow');
     remove(this.#popupComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
-    this.#popupComponent.reset(this.#film, this.#comments);
     this.#mode = PopupMode.CLOSED;
   };
 
@@ -91,38 +92,62 @@ export default class FilmCardPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#changeData({
-      ...this.#film,
-      userDetails: {
-        ...this.#film.userDetails,
-        favorite: !this.#film.userDetails.favorite
-      }
-    });
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      this.#mode === PopupMode.OPEN ? UpdateType.PATCH : UpdateType.MINOR,
+      {
+        ...this.#film,
+        userDetails: {
+          ...this.#film.userDetails,
+          favorite: !this.#film.userDetails.favorite}
+      },
+    );
   };
 
   #handleWatchedClick = () => {
-    this.#changeData({
-      ...this.#film,
-      userDetails: {
-        ...this.#film.userDetails,
-        alreadyWatched: !this.#film.userDetails.alreadyWatched
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      this.#mode === PopupMode.OPEN ? UpdateType.PATCH : UpdateType.MINOR,
+      {
+        ...this.#film,
+        userDetails: {
+          ...this.#film.userDetails,
+          alreadyWatched: !this.#film.userDetails.alreadyWatched
+        }
       }
-    });
+    );
   };
 
   #handleAddToWatchListClick = () => {
-    this.#changeData({
-      ...this.#film,
-      userDetails:{
-        ...this.#film.userDetails,
-        watchlist: !this.#film.userDetails.watchlist
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      this.#mode === PopupMode.OPEN ? UpdateType.PATCH : UpdateType.MINOR,
+      {
+        ...this.#film,
+        userDetails:{
+          ...this.#film.userDetails,
+          watchlist: !this.#film.userDetails.watchlist
+        }
+      });
+  };
+
+  #handleDeleteCommentClick = (index) => {
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
+      {
+        ...this.#film,
+        comments: [
+          ...this.#film.comments.slice(0, index),
+          ...this.#film.comments.slice(index + 1),
+        ]
       }
-    });
+    );
   };
 
   resetView = () => {
     if(this.#mode !== PopupMode.CLOSED) {
-      this.#popupComponent.reset(this.#film, this.#comments);
+      this.#popupComponent.reset(this.#film);
       this.#closePopup();
     }
   };
@@ -132,6 +157,7 @@ export default class FilmCardPresenter {
     this.#popupComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#popupComponent.setWatchedClickHandler(this.#handleWatchedClick);
     this.#popupComponent.setAddToWatchlistClickHandler(this.#handleAddToWatchListClick);
+    this.#popupComponent.setDeleteClickHandler(this.#handleDeleteCommentClick);
   };
 
   #addFilmComponentListeners = () => {

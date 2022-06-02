@@ -16,7 +16,7 @@ const renderCommentEmotion = (value) => {
   return `<img src="./images/emoji/${value}.png" width = "55" height = "55" alt="emoji">`;
 };
 
-const renderComments = (commentsId, filmComments) => filmComments.filter((element) => (commentsId.includes(element.id))).map((element) => `<li class="film-details__comment">
+const renderComments = (commentsId, filmComments) => filmComments.filter((element) => (commentsId.includes(element.id))).map((element) => `<li class="film-details__comment" >
 <span class="film-details__comment-emoji">
   <img src="./images/emoji/${element.emotion}.png" width="55" height="55" alt="emoji-${element.emotion}">
 </span>
@@ -25,7 +25,7 @@ const renderComments = (commentsId, filmComments) => filmComments.filter((elemen
   <p class="film-details__comment-info">
     <span class="film-details__comment-author">${element.author}</span>
     <span class="film-details__comment-day">${changeCommentDateDisplay(element.date)}</span>
-    <button class="film-details__comment-delete">Delete</button>
+    <button class="film-details__comment-delete" data-id = "${element.id}">Delete</button>
   </p>
 </div>
 </li>`).join('');
@@ -157,7 +157,7 @@ export default class PopupView extends AbstractStatefulView {
 
   constructor(film, filmComments) {
     super();
-    this._state = PopupView.transformFilmToState(film);
+    this._state = PopupView.transformFilmToState(film, filmComments);
     this.#filmComments = filmComments;
 
     this.#setInnerHandlers();
@@ -186,14 +186,19 @@ export default class PopupView extends AbstractStatefulView {
     this.setAddToWatchlistClickHandler(this._callback.addToWatchlistClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setWatchedClickHandler(this._callback.watchedClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   };
 
-  static transformFilmToState = (film) => ({... film,
+  static transformFilmToState = (film, comments) => ({... film,
     commentEmotion: '',
+    commentText: '',
+    allComments: comments,
   });
 
-  static transformStateToFilm = () => {
-
+  static transformStateToFilm = (state) => {
+    const film = {...state};
+    this.#filmComments = this._state.allComments;
+    return film;
   };
 
   reset = (film) => {
@@ -241,4 +246,21 @@ export default class PopupView extends AbstractStatefulView {
     evt.preventDefault();
     this._callback.addToWatchlistClick();
   };
+
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    const buttons = this.element.querySelectorAll('.film-details__comment-delete');
+    buttons.forEach((button) => {
+      button.addEventListener('click', this.#commentDeleteClickHandler);
+
+    });
+  };
+
+  #commentDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    const id = +(evt.target.dataset.id);
+    const index = this._state.comments.findIndex((commentId) => commentId === id);
+    this._callback.deleteClick(index);
+  };
 }
+

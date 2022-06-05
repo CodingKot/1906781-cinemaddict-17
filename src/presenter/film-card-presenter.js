@@ -76,6 +76,7 @@ export default class FilmCardPresenter {
     remove(this.#popupComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
     this.#mode = PopupMode.CLOSED;
+    this.#popupComponent.reset(this.#film);
   };
 
   #renderPopup = () => {

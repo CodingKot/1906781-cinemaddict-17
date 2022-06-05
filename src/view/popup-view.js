@@ -1,3 +1,4 @@
+import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { changeReleaseDateDisplay, getTimeFromMins, isGenres, changeCommentDateDisplay} from '../utils/film-details.js';
 
@@ -31,7 +32,7 @@ const renderComments = (commentsId, filmComments) => filmComments.filter((elemen
 </li>`).join('');
 
 const createPopupTemplate = (film, filmComments) =>  {
-  const {comments, filmInfo, userDetails, commentEmotion} = film;
+  const {comments, filmInfo, userDetails, commentEmotion, commentText} = film;
   const releaseDate = filmInfo.release.date !== null ? changeReleaseDateDisplay(filmInfo.release.date) : '';
   const runtime = getTimeFromMins(filmInfo.runtime);
   const genreOrGenres = isGenres(filmInfo.genre) ? 'Genres' : 'Genre';
@@ -119,7 +120,7 @@ const createPopupTemplate = (film, filmComments) =>  {
      <div class="film-details__add-emoji-label">${renderCommentEmotion(commentEmotion)}</div>
 
      <label class="film-details__comment-label">
-       <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+       <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(commentText)}</textarea>
      </label>
 
       <div class="film-details__emoji-list">
@@ -170,13 +171,20 @@ export default class PopupView extends AbstractStatefulView {
   #setInnerHandlers = () => {
     this.element.querySelector('.film-details__emoji-list')
       .addEventListener('change', this.#commentEmotionHandler);
+    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
   };
 
   #commentEmotionHandler = (evt) => {
     evt.preventDefault();
-
     this.updateElement({
       commentEmotion: evt.target.value
+    });
+  };
+
+  #commentInputHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      commentText: evt.target.value,
     });
   };
 

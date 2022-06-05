@@ -1,6 +1,6 @@
 import { render, replace, remove } from '../framework/render.js';
 import FilterView from '../view/filter-view.js';
-import {filter} from '../utils/user-details.js';
+import {filter} from '../utils/filter.js';
 import { FilterType, UpdateType } from '../const.js';
 
 
@@ -8,7 +8,6 @@ export default class FilterPresenter {
   #filterContainer = null;
   #filterModel = null;
   #filmsModel = null;
-
   #filterComponent = null;
 
   constructor(filterContainer, filterModel, filmsModel) {

@@ -15,7 +15,7 @@ import {compareRatings, compareDates} from '../utils/film-details.js';
 import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
 
 import {render, remove, RenderPosition} from '../framework/render.js';
-import {filter} from '../utils/user-details.js';
+import {filter} from '../utils/filter.js';
 
 
 // const EXTRA_CARDS_COUNT = 2;
@@ -61,7 +61,7 @@ export default class ContentPresenter {
 
   get films() {
     this.#filterType = this.#filterModel.filter;
-    const films = this.#filmsModel.films;
+    const films = [...this.#filmsModel.films];
     const filteredFilms = filter[this.#filterType](films);
     switch (this.#currentSortType) {
       case SortType.DATE:
@@ -170,7 +170,6 @@ export default class ContentPresenter {
 
   #clearContent = ({resetRenderedFilmCount = false, resetSortType = false} = {}) => {
     const filmsCount = this.films.length;
-
     this.#filmCardPresenter.forEach((presenter) => presenter.destroy());
     this.#filmCardPresenter.clear();
     remove(this.#sortComponent);
@@ -226,7 +225,6 @@ export default class ContentPresenter {
   };
 
   init = () => {
-
     this.#renderContent();
   };
 }

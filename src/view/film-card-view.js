@@ -12,12 +12,12 @@ const createFilmCardTemplate = (film) => {
     <p class="film-card__info">
       <span class="film-card__year">${releaseDate}</span>
       <span class="film-card__duration">${runtime}</span>
-      <span class="film-card__genre">${filmInfo.genre}</span>
+      <span class="film-card__genre">${filmInfo.genre[0]}</span>
       <span class="film-card__id" hidden>${id}</span>
     </p>
     <img src=${filmInfo.poster} alt="" class="film-card__poster">
     <p class="film-card__description">${sliceDescription(filmInfo.description)}</p>
-    <span class="film-card__comments">${comments.length}</span>
+    <span class="film-card__comments">${comments.length} comments</span>
   </a>
   <div class="film-card__controls">
     <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${userDetails.watchlist && 'film-card__controls-item--active'}" type="button">Add to watchlist</button>

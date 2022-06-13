@@ -41,7 +41,9 @@ export default class FilmsModel extends Observable{
         updatedFilm,
         ...this.#films.slice(index + 1),
       ];
+
       this._notify(updateType, updatedFilm);
+
     } catch(err) {
       throw new Error('Can\'t update film');
     }
@@ -65,13 +67,6 @@ export default class FilmsModel extends Observable{
     } catch(err) {
       throw new Error('Can\'t update film');
     }
-    // this.#films[index].comments = this.#films[index].comments.filter((id) => id !== commentId);
-    // console.log(this.#films[index]);
-    // this.#films = [
-    //   ...this.#films.slice(0, index),
-    //   this.#films[index],
-    //   ...this.#films.slice(index + 1),
-    // ];
   };
 
   #adaptToClient = (film) => {

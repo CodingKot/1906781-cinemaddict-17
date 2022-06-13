@@ -9,12 +9,11 @@ export default class PopupPresenter {
   #film = null;
   #comments = [];
   #changeData = null;
-  #changeCard = null;
 
-  constructor(bodyContentContainer, changeData, changeCard){
+
+  constructor(bodyContentContainer, changeData){
     this.#bodyContentContainer = bodyContentContainer;
     this.#changeData = changeData;
-    this.#changeCard = changeCard;
   }
 
   init (film, comments) {
@@ -53,10 +52,13 @@ export default class PopupPresenter {
     this.#bodyContentContainer.classList.remove('hide-overflow');
     remove(this.#popUpComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#changeData(
+      UserAction.CLOSE_POPUP,
+    );
   };
 
   #handleFavoriteClick = () => {
-    this.#changeCard(
+    this.#changeData(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,
       {
@@ -101,6 +103,7 @@ export default class PopupPresenter {
     this.#popUpComponent.setWatchedClickHandler(this.#handleWatchedClick);
     this.#popUpComponent.setAddToWatchlistClickHandler(this.#handleAddToWatchListClick);
     this.#popUpComponent.setDeleteClickHandler(this.#handleDeleteCommentClick);
+    this.#popUpComponent.setFormSubmitHandler(this.#handleFormSubmit);
   };
 
   #addPopUpNoCommentsListeners = () => {
@@ -111,13 +114,30 @@ export default class PopupPresenter {
   };
 
   #handleDeleteCommentClick = (commentId) => {
+
     this.#changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.DELETE_COMMENT,
-      commentId);
+      commentId,
+      this.#film);
+  };
+
+  #handleFormSubmit = (localComment) => {
+    this.#changeData(
+      UserAction.ADD_COMMENT,
+      UpdateType.ADD_COMMENT,
+      localComment,
+      this.#film);
   };
 
   resetView = () => {
     this.#closePopup();
+  };
+
+  setCommentDeleting = () => {
+    this.#popUpComponent.updateElement({
+      isDisabled: true,
+      isDeleting: true,
+    });
   };
 }

@@ -23,6 +23,8 @@ const UserAction = {
   UPDATE_FILM: 'UPDATE_FILM',
   ADD_COMMENT: 'ADD_COMMENT',
   DELETE_COMMENT: 'DELETE_COMMENT',
+  OPEN_POPUP: 'OPEN_POPUP',
+  CLOSE_POPUP: 'CLOSE_POPUP'
 };
 
 const UpdateType = {
@@ -32,7 +34,8 @@ const UpdateType = {
   INIT_FILMS: 'INIT_FILMS',
   INIT_COMMENTS: 'INIT_COMMENTS',
   DELETE_COMMENT: 'DELETE_COMMENT',
-  DELETE_COMMENT_FROM_CARD: 'DELETE_COMMENT_FROM_CARD'
+  ADD_COMMENT: 'ADD_COMMENT',
+  CLOSE_POPUP: 'CLOSE_POPUP'
 };
 
 const Method = {
@@ -42,4 +45,16 @@ const Method = {
   DELETE: 'DELETE'
 };
 
-export {FilterType, SortType, UserAction,UpdateType, NoFilmsTextType, Method};
+const PROFILE_TITLES = {
+  NOVICE: 'Novice',
+  FAN: 'Fan',
+  MOVIE_BUFF: 'Movie Buff',
+  NO_HISTORY: 'NO HISTORY'
+};
+
+const PopUpMode = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+};
+
+export {FilterType, SortType, UserAction,UpdateType, NoFilmsTextType, Method, PROFILE_TITLES, PopUpMode};

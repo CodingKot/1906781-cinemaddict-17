@@ -1,17 +1,20 @@
 import { render, replace, remove } from '../framework/render.js';
 import FilterView from '../view/filter-view.js';
-import {filter} from '../utils/filter.js';
+import ProfileView from '../view/header-profiile-view.js';
+import {filter, getTitle} from '../utils/filter.js';
 import { FilterType, UpdateType } from '../const.js';
 
 
-
 export default class FilterPresenter {
+  #headerContainer = null;
   #filterContainer = null;
   #filterModel = null;
   #filmsModel = null;
   #filterComponent = null;
+  #profile = null;
 
-  constructor(filterContainer, filterModel, filmsModel) {
+  constructor(siteHeaderElement, filterContainer, filterModel, filmsModel) {
+    this.#headerContainer = siteHeaderElement;
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
     this.#filmsModel = filmsModel;
@@ -47,24 +50,29 @@ export default class FilterPresenter {
         count: filter[FilterType.WATCHLIST](films).length,
       },
 
-
     ];
   }
 
   init = () => {
     const filters = this.filters;
+    const historyFilterCount = filters.filter((item) => item.name === 'history')[0].count;
     const prevFilterComponent = this.#filterComponent;
-
+    const prevProfile = this.#profile;
     this.#filterComponent = new FilterView(filters, this.#filterModel.filter);
+    this.#profile = new ProfileView (getTitle(historyFilterCount));
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
 
-    if(prevFilterComponent  === null) {
+    if(prevFilterComponent  === null && prevProfile === null) {
       render(this.#filterComponent, this.#filterContainer);
+      render(this.#profile, this.#headerContainer);
+
       return;
     }
 
     replace(this.#filterComponent, prevFilterComponent);
+    replace(this.#profile, prevProfile);
     remove(prevFilterComponent);
+    remove(prevProfile);
   };
 
   #handleModelEvent = () => {

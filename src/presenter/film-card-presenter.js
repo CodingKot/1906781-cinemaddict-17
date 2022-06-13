@@ -3,32 +3,25 @@ import PopupPresenter from './popup-presenter.js';
 import { UserAction, UpdateType } from '../const.js';
 import {render, replace, remove} from '../framework/render.js';
 
-const PopUpMode = {
-  OPEN: 'OPEN',
-  CLOSED: 'CLOSED'
-};
 
 export default class FilmCardPresenter {
 
   #bodyContentContainer = null;
   #filmsListContainer = null;
   #film = null;
-  #comments = null;
   #changeData = null;
   #filmComponent = null;
-  #commentsModel = null;
+
   #popUpPresenter = null;
-  #mode = PopUpMode.CLOSED;
   #localComment = {
     comment: '',
     emotion: ''
   };
 
-  constructor (filmsListContainer, bodyContentContainer, changeData, commentsModel, popUpPresenter){
+  constructor (filmsListContainer, bodyContentContainer, changeData, popUpPresenter){
     this.#bodyContentContainer = bodyContentContainer;
     this.#filmsListContainer = filmsListContainer;
     this.#changeData = changeData;
-    this.#commentsModel = commentsModel;
     this.#popUpPresenter = popUpPresenter;
   }
 
@@ -47,56 +40,32 @@ export default class FilmCardPresenter {
     replace(this.#filmComponent, prevfilmComponent);
 
     remove(prevfilmComponent);
-    if(this.#mode === PopUpMode.OPEN) {
-      this.addPopUpToPage();
-    }
+
   };
 
   destroy = () => {
     remove(this.#filmComponent);
   };
 
-  #handleFilmCardEvent = (updateType, update) => {
-    switch (updateType) {
-      case UpdateType.INIT_COMMENTS:
-        this.addPopUpToPage();
-        this.#commentsModel.removeObserver(this.#handleFilmCardEvent);
-        break;
-      // case UpdateType.DELETE_COMMENT:
-      //   this.#commentsModel.deleteComment(updateType, update);
-
-    }
-  };
-
-  #updatePopup = () => {
-    if(this.#mode === PopUpMode.OPEN) {
-      this.#popUpPresenter.get(this.#film.id).init(this.#film, this.#comments);
-    }
-  };
-
-  addPopUpToPage = () => {
+  addPopUpToPage = (comments) => {
     if(this.#popUpPresenter.size !== 0) {
       this.#popUpPresenter.forEach((presenter) => presenter.resetView());
     }
-    const comments = this.comments;
     this.#renderPopUp(this.#film, comments);
-    this.#mode = PopUpMode.OPEN;
   };
 
   #handlePopupOpenClose = () => {
-    this.#commentsModel.addObserver(this.#handleFilmCardEvent);
-    this.#commentsModel.init(this.#film.id);
+    this.#changeData(
+      UserAction.OPEN_POPUP,
+      UpdateType.INIT_COMMENTS,
+      this.#film
+    );
   };
-
-  get comments () {
-    const comments = this.#commentsModel.comments;
-    return comments;
-  }
 
   #handleFavoriteClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      this.#mode === PopUpMode.OPEN ? UpdateType.MINOR : UpdateType.PATCH,
+      UpdateType.MINOR,
       {
         ...this.#film,
         userDetails: {
@@ -109,7 +78,7 @@ export default class FilmCardPresenter {
   #handleWatchedClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      this.#mode === PopUpMode.OPEN ? UpdateType.MINOR : UpdateType.PATCH,
+      UpdateType.MINOR,
       {
         ...this.#film,
         userDetails: {
@@ -123,7 +92,7 @@ export default class FilmCardPresenter {
   #handleAddToWatchListClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      this.#mode === PopUpMode.OPEN ? UpdateType.MINOR : UpdateType.PATCH,
+      UpdateType.MINOR,
       {
         ...this.#film,
         userDetails:{
@@ -134,10 +103,9 @@ export default class FilmCardPresenter {
   };
 
   #renderPopUp = (film, comments) => {
-    const popupPresenter = new PopupPresenter(this.#bodyContentContainer, this.#changeData, this.#handleFilmCardEvent);
+    const popupPresenter = new PopupPresenter(this.#bodyContentContainer, this.#changeData);
     popupPresenter.init(film, comments);
     this.#popUpPresenter.set(film.id, popupPresenter);
-    this.#mode = PopUpMode.OPEN;
   };
 
   #addFilmComponentListeners = () => {
@@ -146,4 +114,5 @@ export default class FilmCardPresenter {
     this.#filmComponent.setWatchedClickHandler(this.#handleWatchedClick);
     this.#filmComponent.setAddToWatchlistClickHandler(this.#handleAddToWatchListClick);
   };
+
 }

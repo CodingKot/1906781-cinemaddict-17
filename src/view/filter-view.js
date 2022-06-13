@@ -3,7 +3,7 @@ import { firstToUpper } from '../utils/common.js';
 
 const createFilterItemTemplate = (filter, currentFilterType) => {
   const {type, name, count} = filter;
-  return (`<a href="#${name}" data-filter = ${type} class="main-navigation__item ${type === currentFilterType && 'main-navigation__item--active'}">${name === 'all' ? 'All movies' : firstToUpper(name)} ${name !== 'all' ? `<span class="main-navigation__item-count">${count}</span>` : ''}</a>`);
+  return (`<a href="#${name}" data-filter = ${type} class="main-navigation__item ${type === currentFilterType && 'main-navigation__item--active'}">${name === 'all' ? 'All movies' : firstToUpper(name)} ${name !== 'all' ? `<span class="main-navigation__item-count" data-filter = ${type}>${count}</span>` : ''}</a>`);
 };
 
 const createFilterTemplate = (filterItems, currentFilterType) => {
@@ -30,12 +30,17 @@ export default class FilterView extends AbstractView {
 
   setFilterTypeChangeHandler = (callback) => {
     this._callback.filterTypeChange = callback;
-    const filterLinks = this.element.querySelectorAll('.main-navigation__item');
-    filterLinks.forEach((link) => link.addEventListener('click', this.#filterTypeChangeHandler));
+    this.element.addEventListener('click', this.#filterTypeChangeHandler);
+    // const filterLinks = this.element.querySelectorAll('.main-navigation__item');
+    // filterLinks.forEach((link) => link.addEventListener('click', this.#filterTypeChangeHandler));
+    // const filterCounts = this.element.querySelectorAll('.main-navigation__item-count');
+    // filterCounts.forEach((count) => count.addEventListener('click', this.#filterTypeChangeHandler));
   };
 
   #filterTypeChangeHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.dataset.filter);
+    if(evt.target.tagName === 'A' || evt.target.tagName === 'SPAN') {
+      evt.preventDefault();
+      this._callback.filterTypeChange(evt.target.dataset.filter);
+    }
   };
 }

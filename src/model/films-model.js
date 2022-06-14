@@ -49,25 +49,6 @@ export default class FilmsModel extends Observable{
     }
   };
 
-  deleteComment = async (updateType, update) => {
-
-    const index = this.#films.findIndex((film) => film.comments.includes(update));
-    if(index === -1) {
-      throw new Error('Can\'t delete unexisting comment');
-    }
-    try {
-      const response = await this.#filmsApiService.updateFilm(this.#films[index]);
-      const updatedFilm = this.#adaptToClient(response);
-      this.#films = [
-        ...this.#films.slice(0, index),
-        updatedFilm,
-        ...this.#films.slice(index + 1),
-      ];
-      this._notify(updateType, updatedFilm);
-    } catch(err) {
-      throw new Error('Can\'t update film');
-    }
-  };
 
   #adaptToClient = (film) => {
     const adaptedFilm = {...film,

@@ -28,7 +28,6 @@ export default class ContentPresenter {
   #filmsModel = null;
   #commentsModel = null;
   #filterModel = null;
-  #currentFilm = null;
   #sortComponent = null;
   #noFilmComponent = null;
   #loadingComponent = new LoadingView();
@@ -46,13 +45,11 @@ export default class ContentPresenter {
   #mostCommentedContainer = new ExtrasContainerView();
   #footerStatistics = null;
   #filmsQuantity = null;
-
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
   #popupPresenter = new Map();
   #renderedFilmCount = FILMS_COUNT_PER_STEP;
   #filmCardPresenter = new Map();
-  #currentFilmPresenter = new Map();
   #isLoading = true;
   #mode = PopUpMode.CLOSED;
 
@@ -119,10 +116,11 @@ export default class ContentPresenter {
         }
         break;
       case UpdateType.MINOR:
-        this.#currentFilm = data.id;
-        this.#clearContent();
+        this.#clearContent({resetRenderedFilmCount: true});
         this.#renderContent();
-        this.#filmCardPresenter.get(this.#currentFilm).addPopUpToPage(this.comments);
+        if(this.#mode === PopUpMode.OPEN) {
+          this.#popupPresenter.get(data.id).init(data, this.comments);
+        }
         break;
       case UpdateType.MAJOR:
         this.#clearContent({resetRenderedFilmCount: true, resetSortType: true});
@@ -186,7 +184,6 @@ export default class ContentPresenter {
   };
 
   #renderFilms = (films) => {
-
     films.forEach((film) => {
       this.#renderFilm(film);
     });

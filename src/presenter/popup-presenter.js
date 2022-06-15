@@ -5,7 +5,7 @@ import {render, replace, remove} from '../framework/render.js';
 
 export default class PopupPresenter {
   #bodyContentContainer = null;
-  #popUpComponent = null;
+  #popupComponent = null;
   #film = null;
   #comments = [];
   #changeData = null;
@@ -19,24 +19,24 @@ export default class PopupPresenter {
   init (film, comments) {
     this.#film = film;
     this.#comments = comments;
-    const prevPopUpComponent = this.#popUpComponent;
-    if(this.#comments === 'no comments') {
-      this.#popUpComponent = new PopUpWithoutComments(film);
+    const prevPopupComponent = this.#popupComponent;
+    if(this.#comments === null) {
+      this.#popupComponent = new PopUpWithoutComments(film);
       this.#addPopUpNoCommentsListeners();
     } else {
-      this.#popUpComponent = new PopUpView(film, comments);
+      this.#popupComponent = new PopUpView(film, comments);
       this.#addPopUpComponentListeners();
     }
-    if(prevPopUpComponent === null) {
+    if(prevPopupComponent === null) {
       this.#renderPopUp();
       return;
     }
-    replace(this.#popUpComponent, prevPopUpComponent);
-    remove(prevPopUpComponent);
+    replace(this.#popupComponent, prevPopupComponent);
+    remove(prevPopupComponent);
   }
 
   #renderPopUp = () => {
-    render(this.#popUpComponent, this.#bodyContentContainer);
+    render(this.#popupComponent, this.#bodyContentContainer);
     this.#bodyContentContainer.classList.add('hide-overflow');
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
@@ -50,7 +50,7 @@ export default class PopupPresenter {
 
   #closePopup = () => {
     this.#bodyContentContainer.classList.remove('hide-overflow');
-    remove(this.#popUpComponent);
+    remove(this.#popupComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
     this.#changeData(
       UserAction.CLOSE_POPUP,
@@ -98,19 +98,19 @@ export default class PopupPresenter {
   };
 
   #addPopUpComponentListeners = () => {
-    this.#popUpComponent.setCloseClickHandler(this.#closePopup);
-    this.#popUpComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
-    this.#popUpComponent.setWatchedClickHandler(this.#handleWatchedClick);
-    this.#popUpComponent.setAddToWatchlistClickHandler(this.#handleAddToWatchListClick);
-    this.#popUpComponent.setDeleteClickHandler(this.#handleDeleteCommentClick);
-    this.#popUpComponent.setFormSubmitHandler(this.#handleFormSubmit);
+    this.#popupComponent.setCloseClickHandler(this.#closePopup);
+    this.#popupComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#popupComponent.setWatchedClickHandler(this.#handleWatchedClick);
+    this.#popupComponent.setAddToWatchlistClickHandler(this.#handleAddToWatchListClick);
+    this.#popupComponent.setDeleteClickHandler(this.#handleDeleteCommentClick);
+    this.#popupComponent.setFormSubmitHandler(this.#handleFormSubmit);
   };
 
   #addPopUpNoCommentsListeners = () => {
-    this.#popUpComponent.setCloseClickHandler(this.#closePopup);
-    this.#popUpComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
-    this.#popUpComponent.setWatchedClickHandler(this.#handleWatchedClick);
-    this.#popUpComponent.setAddToWatchlistClickHandler(this.#handleAddToWatchListClick);
+    this.#popupComponent.setCloseClickHandler(this.#closePopup);
+    this.#popupComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#popupComponent.setWatchedClickHandler(this.#handleWatchedClick);
+    this.#popupComponent.setAddToWatchlistClickHandler(this.#handleAddToWatchListClick);
   };
 
   #handleDeleteCommentClick = (commentId) => {
@@ -135,9 +135,33 @@ export default class PopupPresenter {
   };
 
   setCommentDeleting = () => {
-    this.#popUpComponent.updateElement({
+    this.#popupComponent.updateElement({
       isDisabled: true,
       isDeleting: true,
     });
+  };
+
+  setCommentSending = () => {
+    this.#popupComponent.updateElement({
+      isSending: true,
+    });
+  };
+
+  setPopupUpdating = () => {
+    this.#popupComponent.updateElement({
+      isUpdating: true,
+    });
+  };
+
+  setAborting = () => {
+    const resetPopupState = () => {
+      this.#popupComponent.updateElement({
+        isDisabled: false,
+        isDeleting: false,
+        isSending: false,
+        isUpdating: false,
+      });
+    };
+    this.#popupComponent.shake(resetPopupState);
   };
 }

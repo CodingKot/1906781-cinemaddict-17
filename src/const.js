@@ -57,4 +57,9 @@ const PopUpMode = {
   CLOSED: 'CLOSED'
 };
 
-export {FilterType, SortType, UserAction,UpdateType, NoFilmsTextType, Method, PROFILE_TITLES, PopUpMode};
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
+export {FilterType, SortType, UserAction,UpdateType, NoFilmsTextType, Method, PROFILE_TITLES, PopUpMode, TimeLimit};

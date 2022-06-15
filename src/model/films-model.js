@@ -6,9 +6,9 @@ export default class FilmsModel extends Observable{
   #filmsApiService = null;
   #films = [];
 
-  constructor(fimsApiService) {
+  constructor(filmsApiService) {
     super();
-    this.#filmsApiService = fimsApiService;
+    this.#filmsApiService = filmsApiService;
   }
 
   get films() {
@@ -47,6 +47,21 @@ export default class FilmsModel extends Observable{
     } catch(err) {
       throw new Error('Can\'t update film');
     }
+  };
+
+  addComment = (updateType, update) => {
+    const updatedFilm = this.#adaptToClient(update);
+    const index = this.#films.findIndex((film) => film.id === updatedFilm.id);
+
+    if(index === -1) {
+      throw new Error('Can\'t update unexisting film');
+    }
+    this.#films = [
+      ...this.#films.slice(0, index),
+      updatedFilm,
+      ...this.#films.slice(index + 1),
+    ];
+    this._notify(updateType, updatedFilm);
   };
 
 

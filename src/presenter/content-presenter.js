@@ -1,3 +1,4 @@
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import SortView from '../view/sort-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import FilmsSectionView from '../view/films-section-view.js';
@@ -13,7 +14,7 @@ import NoFilmsView from '../view/no-films-view.js';
 import FilmsQuantityView from '../view/films-quantity-view.js';
 import FilmCardPresenter from './film-card-presenter.js';
 import {compareRatings, compareDates} from '../utils/film-details.js';
-import {SortType, UpdateType, UserAction, FilterType, PopUpMode} from '../const.js';
+import {SortType, UpdateType, UserAction, FilterType, PopUpMode, TimeLimit} from '../const.js';
 
 import {render, remove, RenderPosition} from '../framework/render.js';
 import {filter} from '../utils/filter.js';
@@ -52,6 +53,7 @@ export default class ContentPresenter {
   #filmCardPresenter = new Map();
   #isLoading = true;
   #mode = PopUpMode.CLOSED;
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   constructor(mainContentContainer, bodyContentContainer, filmsModel, commentsModel, filterModel, footerStatistics) {
 
@@ -80,11 +82,11 @@ export default class ContentPresenter {
   }
 
   get comments () {
-    const comments = this.#commentsModel.comments;
-    return comments;
+    return this.#commentsModel.comments;
   }
 
-  #handleViewAction = (actionType, updateType, update, film) => {
+  #handleViewAction = async (actionType, updateType, update, film) => {
+    this.#uiBlocker.block();
     switch(actionType) {
       case UserAction.OPEN_POPUP:
         this.#commentsModel.init(updateType, update.id);
@@ -93,17 +95,37 @@ export default class ContentPresenter {
         this.#mode = PopUpMode.CLOSED;
         break;
       case UserAction.UPDATE_FILM:
-        this.#filmsModel.updateFilm(updateType, update);
+        this.#filmCardPresenter.get(update.id).setCardUpdating();
+        if(this.#mode === PopUpMode.OPEN) {
+          this.#popupPresenter.get(update.id).setPopupUpdating();
+        }
+        try {
+          await this.#filmsModel.updateFilm(updateType, update);
+        } catch(err) {
+          this.#filmCardPresenter.get(update.id).setAborting();
+          if(this.#mode === PopUpMode.OPEN) {
+            this.#popupPresenter.get(update.id).setAborting();
+          }
+        }
         break;
       case UserAction.ADD_COMMENT:
-        this.#commentsModel.addComment(updateType, film, update);
-        this.#filmsModel.updateFilm(updateType, update);
+        this.#popupPresenter.get(film.id).setCommentSending();
+        try {
+          await this.#commentsModel.addComment(updateType, update, film);
+        } catch(err) {
+          this.#popupPresenter.get(film.id).setAborting();
+        }
         break;
       case UserAction.DELETE_COMMENT:
         this.#popupPresenter.get(film.id).setCommentDeleting();
-        this.#commentsModel.deleteComment(updateType, update, film);
+        try {
+          await this.#commentsModel.deleteComment(updateType, update, film);
+        } catch(err) {
+          this.#popupPresenter.get(film.id).setAborting();
+        }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
@@ -111,8 +133,7 @@ export default class ContentPresenter {
       case UpdateType.PATCH:
         this.#filmCardPresenter.get(data.id).init(data);
         if(this.#mode === PopUpMode.OPEN) {
-          this.#filmCardPresenter.get(data.id).addPopUpToPage(this.comments);
-          this.#mode = PopUpMode.OPEN;
+          this.#popupPresenter.get(data.id).init(data, this.comments);
         }
         break;
       case UpdateType.MINOR:
@@ -139,8 +160,7 @@ export default class ContentPresenter {
         this.#filmsModel.updateFilm(UpdateType.PATCH, data);
         break;
       case UpdateType.ADD_COMMENT:
-        this.#filmCardPresenter.get(data.id).init(data);
-        this.#filmCardPresenter.get(data.id).addPopUpToPage();
+        this.#filmsModel.addComment(UpdateType.PATCH, data);
         break;
     }
   };

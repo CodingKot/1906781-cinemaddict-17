@@ -26,14 +26,14 @@ const renderComments = (film, filmComments) => filmComments.map((element) => `<l
 
 const createPopupTemplate = (film, filmComments) =>  {
 
-  const {filmInfo, userDetails, comments, comment, emotion} = film;
+  const {filmInfo, userDetails, comments, comment, emotion, isSending, isUpdating} = film;
   const releaseDate = filmInfo.release.date !== null ? changeReleaseDateDisplay(filmInfo.release.date) : '';
   const runtime = getTimeFromMins(filmInfo.runtime);
   const genreOrGenres = isGenres(filmInfo.genre) ? 'Genres' : 'Genre';
 
   return (`
   <section class="film-details">
-    <form class="film-details__inner" action="" method="get">
+    <form class="film-details__inner" action="" method="get" ${isSending ? 'disabled' : ''}>
       <div class="film-details__top-container">
         <div class="film-details__close">
           <button class="film-details__close-btn" type="button">close</button>
@@ -41,7 +41,7 @@ const createPopupTemplate = (film, filmComments) =>  {
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
             <img class="film-details__poster-img" src="${filmInfo.poster}" alt="">
-            <p class="film-details__age">${filmInfo.ageRating}</p>
+            <p class="film-details__age">${filmInfo.ageRating}+</p>
           </div>
 
           <div class="film-details__info">
@@ -96,9 +96,9 @@ const createPopupTemplate = (film, filmComments) =>  {
         </div>
 
         <section class="film-details__controls">
-          <button type="button" class="film-details__control-button film-details__control-button--watchlist ${userDetails.watchlist && 'film-details__control-button--active'}" id="watchlist" name="watchlist">Add to watchlist</button>
-          <button type="button" class="film-details__control-button film-details__control-button--watched ${userDetails.alreadyWatched && 'film-details__control-button--active'}" id="watched" name="watched">Already watched</button>
-          <button type="button" class="film-details__control-button film-details__control-button--favorite ${userDetails.favorite && 'film-details__control-button--active'}" id="favorite" name="favorite">Add to favorites</button>
+          <button type="button" class="film-details__control-button film-details__control-button--watchlist ${userDetails.watchlist && 'film-details__control-button--active'}" id="watchlist" name="watchlist" ${isUpdating ? 'disabled' : ''}>Add to watchlist</button>
+          <button type="button" class="film-details__control-button film-details__control-button--watched ${userDetails.alreadyWatched && 'film-details__control-button--active'}" id="watched" name="watched" ${isUpdating ? 'disabled' : ''}>Already watched</button>
+          <button type="button" class="film-details__control-button film-details__control-button--favorite ${userDetails.favorite && 'film-details__control-button--active'}" id="favorite" name="favorite" ${isUpdating ? 'disabled' : ''}>Add to favorites</button>
         </section>
       </div>
       <div class="film-details__bottom-container">
@@ -113,26 +113,26 @@ const createPopupTemplate = (film, filmComments) =>  {
             <div class="film-details__add-emoji-label">${renderCommentEmotion(emotion)}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(comment)}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isSending ? 'disabled' : ''}>${he.encode(comment)}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${emotion === 'smile' && 'checked'}>
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${emotion === 'smile' && 'checked'} ${isSending ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="emoji-smile">
                 <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${emotion === 'sleeping' && 'checked'}>
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${emotion === 'sleeping' && 'checked'} ${isSending ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="emoji-sleeping">
               <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
             </label>
 
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${emotion === 'puke' && 'checked'}>
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${emotion === 'puke' && 'checked'} ${isSending ? 'disabled' : ''}>
             <label class="film-details__emoji-label" for="emoji-puke">
               <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
             </label>
 
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry" ${emotion === 'angry' && 'checked'}>
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry" ${emotion === 'angry' && 'checked'} ${isSending ? 'disabled' : ''}>
             <label class="film-details__emoji-label" for="emoji-angry">
               <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
             </label>
@@ -161,12 +161,15 @@ export default class PopUpView extends AbstractStatefulView {
     return createPopupTemplate (this._state, this.#filmComments);
   }
 
+
   static transformToState = (film) => ({
     ...film,
     emotion: '',
     comment: '',
     isDisabled: false,
     isDeleting: false,
+    isSending: false,
+    isUpdating: false,
   });
 
   static transformToFilm = (state, localComment) => {
@@ -178,6 +181,8 @@ export default class PopUpView extends AbstractStatefulView {
     delete film.emotion;
     delete film.isDeleting;
     delete film.isDisabled;
+    delete film.isSending;
+    delete film.isUpdating;
 
     return film;
   };
@@ -209,6 +214,7 @@ export default class PopUpView extends AbstractStatefulView {
 
     });
   };
+
 
   #commentDeleteClickHandler = (evt) => {
     evt.preventDefault();
@@ -275,7 +281,7 @@ export default class PopUpView extends AbstractStatefulView {
   };
 
   #formSubmitHandler = (evt) => {
-    if ((evt.key === 'Control' || evt.key === 'Ctrl') && (evt.key === 'Enter' || evt.keyCode === '13')) {
+    if (evt.metaKey && evt.keyCode === 13 || evt.ctrlKey && evt.keyCode === 13) {
       evt.preventDefault();
       const localComment = {};
       PopUpView.transformToFilm(this._state, localComment);

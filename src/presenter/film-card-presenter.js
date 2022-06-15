@@ -11,18 +11,13 @@ export default class FilmCardPresenter {
   #film = null;
   #changeData = null;
   #filmComponent = null;
+  #popupPresenter = null;
 
-  #popUpPresenter = null;
-  #localComment = {
-    comment: '',
-    emotion: ''
-  };
-
-  constructor (filmsListContainer, bodyContentContainer, changeData, popUpPresenter){
+  constructor (filmsListContainer, bodyContentContainer, changeData, popupPresenter){
     this.#bodyContentContainer = bodyContentContainer;
     this.#filmsListContainer = filmsListContainer;
     this.#changeData = changeData;
-    this.#popUpPresenter = popUpPresenter;
+    this.#popupPresenter = popupPresenter;
   }
 
   init = (film) => {
@@ -48,8 +43,8 @@ export default class FilmCardPresenter {
   };
 
   addPopUpToPage = (comments) => {
-    if(this.#popUpPresenter.size !== 0) {
-      this.#popUpPresenter.forEach((presenter) => presenter.resetView());
+    if(this.#popupPresenter.size !== 0) {
+      this.#popupPresenter.forEach((presenter) => presenter.resetView());
     }
     this.#renderPopUp(this.#film, comments);
   };
@@ -105,7 +100,7 @@ export default class FilmCardPresenter {
   #renderPopUp = (film, comments) => {
     const popupPresenter = new PopupPresenter(this.#bodyContentContainer, this.#changeData);
     popupPresenter.init(film, comments);
-    this.#popUpPresenter.set(film.id, popupPresenter);
+    this.#popupPresenter.set(film.id, popupPresenter);
   };
 
   #addFilmComponentListeners = () => {
@@ -113,6 +108,21 @@ export default class FilmCardPresenter {
     this.#filmComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#filmComponent.setWatchedClickHandler(this.#handleWatchedClick);
     this.#filmComponent.setAddToWatchlistClickHandler(this.#handleAddToWatchListClick);
+  };
+
+  setCardUpdating = () => {
+    this.#filmComponent.updateElement({
+      isUpdating: true,
+    });
+  };
+
+  setAborting = () => {
+    const resetCardState = () => {
+      this.#filmComponent.updateElement({
+        isUpdating: false,
+      });
+    };
+    this.#filmComponent.shake(resetCardState);
   };
 
 }

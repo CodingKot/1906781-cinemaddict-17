@@ -17,7 +17,7 @@ const createPopupTemplate = (film) => {
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
             <img class="film-details__poster-img" src="${filmInfo.poster}" alt="">
-            <p class="film-details__age">${filmInfo.ageRating}</p>
+            <p class="film-details__age">${filmInfo.ageRating}+</p>
           </div>
 
           <div class="film-details__info">
@@ -79,7 +79,7 @@ const createPopupTemplate = (film) => {
       </div>
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.lehgth}</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <p class = "no_comments__text"> Sorry, comments can't be loaded.</p>
 

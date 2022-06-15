@@ -7,7 +7,7 @@ dayjs.extend(duration);
 
 const sliceDescription = (description) => description.length > 140 ? `${description.slice(0,138)}...` : description;
 
-const isGenres = (string) => string.includes(',');
+const isGenres = (array) => array.length > 1;
 
 const changeReleaseDateDisplayYears = (releaseDate) => dayjs(releaseDate).format('YYYY');
 const changeReleaseDateDisplay = (releaseDate) => dayjs(releaseDate).format('DD MMMM YYYY');

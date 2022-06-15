@@ -1,23 +1,28 @@
-import ProfileView from './view/profile-view';
-import FilterView from './view/filter-view.js';
-
-import FilmsPresenter from './presenter/content-presenter.js';
+import ContentPresenter from './presenter/content-presenter.js';
+import FilterPresenter from './presenter/filter-presenter.js';
 import FilmsModel from './model/films-model.js';
-import {render} from './framework/render.js';
-import { generateFilter } from './mock/filter.js';
+import CommentsModel from './model/comments-model.js';
+import FilterModel from './model/filter-model.js';
+import FilmsApiService from './films-api-service.js';
+import CommentsApiService from './comments-api-service.js';
+
+
+const AUTHORISATION = 'Basic gh6yT5io987j72aj';
+const END_POINT = 'https://17.ecmascript.pages.academy/cinemaddict/';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const bodyElement = document.querySelector('body');
+const footerStatistics = document.querySelector('.footer__statistics');
 
-const filmsModel = new FilmsModel();
-const filmsPresenter = new FilmsPresenter(siteMainElement, bodyElement, filmsModel);
-
-const filters = generateFilter(filmsModel.films);
-
-render(new ProfileView(), siteHeaderElement);
-render(new FilterView(filters), siteMainElement);
+const filmsModel = new FilmsModel(new FilmsApiService(END_POINT, AUTHORISATION));
+const commentsModel = new CommentsModel(new CommentsApiService(END_POINT, AUTHORISATION), filmsModel);
+const filterModel = new FilterModel();
+const contentPresenter = new ContentPresenter(siteMainElement, bodyElement, filmsModel, commentsModel, filterModel, footerStatistics);
+const filterPresenter = new FilterPresenter(siteHeaderElement, siteMainElement, filterModel, filmsModel);
 
 
-filmsPresenter.init();
+filterPresenter.init();
+contentPresenter.init();
+filmsModel.init();
 

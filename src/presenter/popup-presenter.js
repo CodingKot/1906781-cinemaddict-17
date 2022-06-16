@@ -9,11 +9,12 @@ export default class PopupPresenter {
   #film = null;
   #comments = [];
   #changeData = null;
+  #previousState = null;
 
-
-  constructor(bodyContentContainer, changeData){
+  constructor(bodyContentContainer, changeData, previousState){
     this.#bodyContentContainer = bodyContentContainer;
     this.#changeData = changeData;
+    this.#previousState = previousState;
   }
 
   init (film, comments) {
@@ -58,6 +59,7 @@ export default class PopupPresenter {
   };
 
   #handleFavoriteClick = () => {
+    this.#previousState.set(this.#film.id, this.#popupComponent.state);
     this.#changeData(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,
@@ -71,6 +73,7 @@ export default class PopupPresenter {
   };
 
   #handleWatchedClick = () => {
+    this.#previousState.set(this.#film.id, this.#popupComponent.state);
     this.#changeData(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,
@@ -85,6 +88,7 @@ export default class PopupPresenter {
   };
 
   #handleAddToWatchListClick = () => {
+    this.#previousState.set(this.#film.id, this.#popupComponent.state);
     this.#changeData(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,
@@ -114,7 +118,7 @@ export default class PopupPresenter {
   };
 
   #handleDeleteCommentClick = (commentId) => {
-
+    this.#previousState.set(this.#film.id, this.#popupComponent.state);
     this.#changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.DELETE_COMMENT,
@@ -163,5 +167,12 @@ export default class PopupPresenter {
       });
     };
     this.#popupComponent.shake(resetPopupState);
+  };
+
+  setPreviousComment = (previous) => {
+    this.#popupComponent.updateElement({
+      comment: previous.comment,
+      emotion: previous.emotion,
+    });
   };
 }

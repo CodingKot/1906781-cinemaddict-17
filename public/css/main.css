@@ -441,6 +441,10 @@ button {
   overflow-y: auto;
 }
 
+.film-details.shake {
+  position: fixed;
+}
+
 .film-details__inner {
   background-color: #212126;
 }

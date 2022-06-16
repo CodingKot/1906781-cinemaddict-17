@@ -12,12 +12,14 @@ export default class FilmCardPresenter {
   #changeData = null;
   #filmComponent = null;
   #popupPresenter = null;
+  #previousState = null;
 
-  constructor (filmsListContainer, bodyContentContainer, changeData, popupPresenter){
+  constructor (filmsListContainer, bodyContentContainer, changeData, popupPresenter, previousState){
     this.#bodyContentContainer = bodyContentContainer;
     this.#filmsListContainer = filmsListContainer;
     this.#changeData = changeData;
     this.#popupPresenter = popupPresenter;
+    this.#previousState = previousState;
   }
 
   init = (film) => {
@@ -98,7 +100,7 @@ export default class FilmCardPresenter {
   };
 
   #renderPopUp = (film, comments) => {
-    const popupPresenter = new PopupPresenter(this.#bodyContentContainer, this.#changeData);
+    const popupPresenter = new PopupPresenter(this.#bodyContentContainer, this.#changeData, this.#previousState);
     popupPresenter.init(film, comments);
     this.#popupPresenter.set(film.id, popupPresenter);
   };

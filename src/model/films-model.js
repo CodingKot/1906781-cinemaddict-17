@@ -41,9 +41,7 @@ export default class FilmsModel extends Observable{
         updatedFilm,
         ...this.#films.slice(index + 1),
       ];
-
       this._notify(updateType, updatedFilm);
-
     } catch(err) {
       throw new Error('Can\'t update film');
     }

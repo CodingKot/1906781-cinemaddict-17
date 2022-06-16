@@ -51,6 +51,7 @@ export default class ContentPresenter {
   #popupPresenter = new Map();
   #renderedFilmCount = FILMS_COUNT_PER_STEP;
   #filmCardPresenter = new Map();
+  #previousState = new Map();
   #isLoading = true;
   #mode = PopUpMode.CLOSED;
   #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
@@ -130,7 +131,14 @@ export default class ContentPresenter {
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
-      case UpdateType.PATCH:
+      case UpdateType.PATCH_DELETE_COMMENT:
+        this.#filmCardPresenter.get(data.id).init(data);
+        if(this.#mode === PopUpMode.OPEN) {
+          this.#popupPresenter.get(data.id).init(data, this.comments);
+          this.#updateToPrevious(data, this.#popupPresenter.get(data.id));
+        }
+        break;
+      case UpdateType.PATCH_ADD_COMMENT:
         this.#filmCardPresenter.get(data.id).init(data);
         if(this.#mode === PopUpMode.OPEN) {
           this.#popupPresenter.get(data.id).init(data, this.comments);
@@ -141,6 +149,7 @@ export default class ContentPresenter {
         this.#renderContent();
         if(this.#mode === PopUpMode.OPEN) {
           this.#popupPresenter.get(data.id).init(data, this.comments);
+          this.#updateToPrevious(data, this.#popupPresenter.get(data.id));
         }
         break;
       case UpdateType.MAJOR:
@@ -157,10 +166,10 @@ export default class ContentPresenter {
         this.#mode = PopUpMode.OPEN;
         break;
       case UpdateType.DELETE_COMMENT:
-        this.#filmsModel.updateFilm(UpdateType.PATCH, data);
+        this.#filmsModel.updateFilm(UpdateType.PATCH_DELETE_COMMENT, data);
         break;
       case UpdateType.ADD_COMMENT:
-        this.#filmsModel.addComment(UpdateType.PATCH, data);
+        this.#filmsModel.addComment(UpdateType.PATCH_ADD_COMMENT, data);
         break;
     }
   };
@@ -172,6 +181,12 @@ export default class ContentPresenter {
     this.#currentSortType = sortType;
     this.#clearContent({resetRenderedFilmCount: true});
     this.#renderContent();
+  };
+
+  #updateToPrevious = (film, element) => {
+    const previous = this.#previousState.get(film.id);
+    element.setPreviousComment(previous);
+    this.#previousState.clear();
   };
 
   #renderLoading = () => {
@@ -297,7 +312,7 @@ export default class ContentPresenter {
 
 
   #renderFilm = (film) => {
-    const filmCardPresenter = new FilmCardPresenter(this.#filmsListContainer.element, this.#bodyContentContainer, this.#handleViewAction, this.#popupPresenter);
+    const filmCardPresenter = new FilmCardPresenter(this.#filmsListContainer.element, this.#bodyContentContainer, this.#handleViewAction, this.#popupPresenter, this.#previousState);
     filmCardPresenter.init(film);
     this.#filmCardPresenter.set(film.id, filmCardPresenter);
   };

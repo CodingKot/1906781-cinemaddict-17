@@ -2,7 +2,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {changeReleaseDateDisplay, getTimeFromMins, isGenres, changeCommentDateDisplay} from '../utils/film-details.js';
 import he from 'he';
 
-
+let deletingComment = null;
 const renderCommentEmotion = (value) => {
   if(value === '') {
     return '';
@@ -19,7 +19,7 @@ const renderComments = (film, filmComments) => filmComments.map((element) => `<l
   <p class="film-details__comment-info">
     <span class="film-details__comment-author">${element.author}</span>
     <span class="film-details__comment-day">${changeCommentDateDisplay(element.date)}</span>
-    <button class="film-details__comment-delete" data-id = "${element.id}" ${film.isDisabled ? 'disabled' : ''}">${film.isDeleting ? 'Deleting...' : 'delete'}</button>
+    <button class="film-details__comment-delete" data-id = "${element.id}" ${film.isDisabled ? 'disabled' : ''}>${deletingComment === element.id && film.isDeleting ? 'Deleting...' : 'delete'}</button>
   </p>
 </div>
 </li>`).join('');
@@ -161,11 +161,16 @@ export default class PopUpView extends AbstractStatefulView {
     return createPopupTemplate (this._state, this.#filmComments);
   }
 
+  get state () {
+    return this._state;
+  }
+
 
   static transformToState = (film) => ({
     ...film,
     emotion: '',
     comment: '',
+    isChecked: false,
     isDisabled: false,
     isDeleting: false,
     isSending: false,
@@ -179,11 +184,11 @@ export default class PopUpView extends AbstractStatefulView {
 
     delete film.comment;
     delete film.emotion;
+    delete film.isChecked;
     delete film.isDeleting;
     delete film.isDisabled;
     delete film.isSending;
     delete film.isUpdating;
-
     return film;
   };
 
@@ -217,9 +222,9 @@ export default class PopUpView extends AbstractStatefulView {
 
 
   #commentDeleteClickHandler = (evt) => {
-    evt.preventDefault();
-    const commentId = evt.target.dataset.id;
-    this._callback.deleteClick(commentId);
+    deletingComment = evt.target.dataset.id;
+    // const commentId = evt.target.dataset.id;
+    this._callback.deleteClick(deletingComment);
   };
 
   _restoreHandlers = () => {

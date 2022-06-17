@@ -21,7 +21,6 @@ const filterModel = new FilterModel();
 const contentPresenter = new ContentPresenter(siteMainElement, bodyElement, filmsModel, commentsModel, filterModel, footerStatistics);
 const filterPresenter = new FilterPresenter(siteHeaderElement, siteMainElement, filterModel, filmsModel);
 
-
 filterPresenter.init();
 contentPresenter.init();
 filmsModel.init();

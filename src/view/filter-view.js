@@ -31,10 +31,6 @@ export default class FilterView extends AbstractView {
   setFilterTypeChangeHandler = (callback) => {
     this._callback.filterTypeChange = callback;
     this.element.addEventListener('click', this.#filterTypeChangeHandler);
-    // const filterLinks = this.element.querySelectorAll('.main-navigation__item');
-    // filterLinks.forEach((link) => link.addEventListener('click', this.#filterTypeChangeHandler));
-    // const filterCounts = this.element.querySelectorAll('.main-navigation__item-count');
-    // filterCounts.forEach((count) => count.addEventListener('click', this.#filterTypeChangeHandler));
   };
 
   #filterTypeChangeHandler = (evt) => {

@@ -2,7 +2,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { changeReleaseDateDisplayYears, getTimeFromMins, sliceDescription} from '../utils/film-details.js';
 
 const createFilmCardTemplate = (film) => {
-  const {id,comments, filmInfo, userDetails, isUpdating} = film;
+  const {id, comments, filmInfo, userDetails, isUpdating} = film;
   const releaseDate = filmInfo.release.date !== null ? changeReleaseDateDisplayYears(filmInfo.release.date) : '';
   const runtime = getTimeFromMins(filmInfo.runtime);
   return (`<article class="film-card">

@@ -2,7 +2,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {changeReleaseDateDisplay, getTimeFromMins, isGenres, changeCommentDateDisplay} from '../utils/film-details.js';
 import he from 'he';
 
-let deletingComment = null;
+
 const renderCommentEmotion = (value) => {
   if(value === '') {
     return '';
@@ -10,7 +10,7 @@ const renderCommentEmotion = (value) => {
   return `<img src="./images/emoji/${value}.png" width = "55" height = "55" alt="emoji">`;
 };
 
-const renderComments = (film, filmComments) => filmComments.map((element) => `<li class="film-details__comment" >
+const renderComments = (film, filmComments, deletingComment) => filmComments.map((element) => `<li class="film-details__comment" >
 <span class="film-details__comment-emoji">
   <img src="./images/emoji/${element.emotion}.png" width="55" height="55" alt="emoji-${element.emotion}">
 </span>
@@ -24,7 +24,7 @@ const renderComments = (film, filmComments) => filmComments.map((element) => `<l
 </div>
 </li>`).join('');
 
-const createPopupTemplate = (film, filmComments) =>  {
+const createPopupTemplate = (film, filmComments, deletingComment) =>  {
 
   const {filmInfo, userDetails, comments, comment, emotion, isSending, isUpdating} = film;
   const releaseDate = filmInfo.release.date !== null ? changeReleaseDateDisplay(filmInfo.release.date) : '';
@@ -106,7 +106,7 @@ const createPopupTemplate = (film, filmComments) =>  {
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
-            ${renderComments(film, filmComments)}
+            ${renderComments(film, filmComments, deletingComment)}
           </ul>
 
           <div class="film-details__new-comment">
@@ -149,6 +149,7 @@ const createPopupTemplate = (film, filmComments) =>  {
 export default class PopUpView extends AbstractStatefulView {
 
   #filmComments = null;
+  #deletingComment = null;
 
   constructor(film, filmComments) {
     super();
@@ -158,7 +159,7 @@ export default class PopUpView extends AbstractStatefulView {
   }
 
   get template () {
-    return createPopupTemplate (this._state, this.#filmComments);
+    return createPopupTemplate (this._state, this.#filmComments, this.#deletingComment);
   }
 
   get state () {
@@ -222,9 +223,9 @@ export default class PopUpView extends AbstractStatefulView {
 
 
   #commentDeleteClickHandler = (evt) => {
-    deletingComment = evt.target.dataset.id;
+    this.#deletingComment = evt.target.dataset.id;
     // const commentId = evt.target.dataset.id;
-    this._callback.deleteClick(deletingComment);
+    this._callback.deleteClick(this.#deletingComment);
   };
 
   _restoreHandlers = () => {

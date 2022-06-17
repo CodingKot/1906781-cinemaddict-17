@@ -40,5 +40,7 @@ const compareDates = (dateA, dateB) => {
   return weight ?? dayjs(dateB.filmInfo.release.date).diff(dayjs(dateA.filmInfo.release.date));
 };
 
+const compareCommentsNumber = (numberA, numberB) => numberB.comments.length - numberA.comments.length;
 
-export {changeReleaseDateDisplayYears, changeReleaseDateDisplay, getTimeFromMins, isGenres, sliceDescription, changeCommentDateDisplay, compareRatings, compareDates};
+
+export {changeReleaseDateDisplayYears, changeReleaseDateDisplay, getTimeFromMins, isGenres, sliceDescription, changeCommentDateDisplay, compareRatings, compareDates, compareCommentsNumber};

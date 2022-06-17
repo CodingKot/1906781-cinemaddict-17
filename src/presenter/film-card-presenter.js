@@ -25,7 +25,6 @@ export default class FilmCardPresenter {
   init = (film) => {
     this.#film = film;
     const prevfilmComponent = this.#filmComponent;
-
     this.#filmComponent = new FilmCardView(film);
     this.#addFilmComponentListeners();
 
@@ -37,7 +36,6 @@ export default class FilmCardPresenter {
     replace(this.#filmComponent, prevfilmComponent);
 
     remove(prevfilmComponent);
-
   };
 
   destroy = () => {

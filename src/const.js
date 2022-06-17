@@ -1,3 +1,8 @@
+const SectionHeading = {
+  COMMENTED: 'Most commented',
+  RATED: 'Top rated',
+};
+
 const FilterType = {
   ALL: 'all',
   WATCHLIST: 'watchlist',
@@ -16,7 +21,7 @@ const NoFilmsTextType = {
 const SortType = {
   DEFAULT: 'default',
   DATE: 'date',
-  RATING: 'rating'
+  RATING: 'rating',
 };
 
 const UserAction = {
@@ -24,7 +29,7 @@ const UserAction = {
   ADD_COMMENT: 'ADD_COMMENT',
   DELETE_COMMENT: 'DELETE_COMMENT',
   OPEN_POPUP: 'OPEN_POPUP',
-  CLOSE_POPUP: 'CLOSE_POPUP'
+  CLOSE_POPUP: 'CLOSE_POPUP',
 };
 
 const UpdateType = {
@@ -36,26 +41,26 @@ const UpdateType = {
   INIT_COMMENTS: 'INIT_COMMENTS',
   DELETE_COMMENT: 'DELETE_COMMENT',
   ADD_COMMENT: 'ADD_COMMENT',
-  CLOSE_POPUP: 'CLOSE_POPUP'
+  CLOSE_POPUP: 'CLOSE_POPUP',
 };
 
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
   POST: 'POST',
-  DELETE: 'DELETE'
+  DELETE: 'DELETE',
 };
 
 const PROFILE_TITLES = {
   NOVICE: 'Novice',
   FAN: 'Fan',
   MOVIE_BUFF: 'Movie Buff',
-  NO_HISTORY: 'NO HISTORY'
+  NO_HISTORY: 'NO HISTORY',
 };
 
 const PopUpMode = {
   OPEN: 'OPEN',
-  CLOSED: 'CLOSED'
+  CLOSED: 'CLOSED',
 };
 
 const TimeLimit = {
@@ -63,4 +68,4 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
-export {FilterType, SortType, UserAction,UpdateType, NoFilmsTextType, Method, PROFILE_TITLES, PopUpMode, TimeLimit};
+export {FilterType, SortType, UserAction,UpdateType, NoFilmsTextType, Method, PROFILE_TITLES, PopUpMode, TimeLimit, SectionHeading};

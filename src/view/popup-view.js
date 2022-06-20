@@ -10,7 +10,7 @@ const renderCommentEmotion = (value) => {
   return `<img src="./images/emoji/${value}.png" width = "55" height = "55" alt="emoji">`;
 };
 
-const renderComments = (film, filmComments, deletingComment) => filmComments.map((element) => `<li class="film-details__comment" >
+const renderComments = (film, filmComments, deletingComment) => filmComments.map((element) => `<li class="film-details__comment" data-id = "${element.id}">
 <span class="film-details__comment-emoji">
   <img src="./images/emoji/${element.emotion}.png" width="55" height="55" alt="emoji-${element.emotion}">
 </span>
@@ -19,7 +19,7 @@ const renderComments = (film, filmComments, deletingComment) => filmComments.map
   <p class="film-details__comment-info">
     <span class="film-details__comment-author">${element.author}</span>
     <span class="film-details__comment-day">${changeCommentDateDisplay(element.date)}</span>
-    <button class="film-details__comment-delete" data-id = "${element.id}" ${film.isDisabled ? 'disabled' : ''}>${deletingComment === element.id && film.isDeleting ? 'Deleting...' : 'delete'}</button>
+    <button class="film-details__comment-delete" ${film.isDisabled ? 'disabled' : ''}>${deletingComment === element.id && film.isDeleting ? 'Deleting...' : 'delete'}</button>
   </p>
 </div>
 </li>`).join('');
@@ -171,7 +171,6 @@ export default class PopUpView extends AbstractStatefulView {
     ...film,
     emotion: '',
     comment: '',
-    isChecked: false,
     isDisabled: false,
     isDeleting: false,
     isSending: false,
@@ -185,7 +184,6 @@ export default class PopUpView extends AbstractStatefulView {
 
     delete film.comment;
     delete film.emotion;
-    delete film.isChecked;
     delete film.isDeleting;
     delete film.isDisabled;
     delete film.isSending;
@@ -223,10 +221,13 @@ export default class PopUpView extends AbstractStatefulView {
 
 
   #commentDeleteClickHandler = (evt) => {
-    this.#deletingComment = evt.target.dataset.id;
-    // const commentId = evt.target.dataset.id;
+    this.#deletingComment = evt.target.closest('li').dataset.id;
     this._callback.deleteClick(this.#deletingComment);
   };
+
+  get comment () {
+    return this.#deletingComment;
+  }
 
   _restoreHandlers = () => {
     this.#setInnerHandlers();

@@ -5,7 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime.js';
 dayjs.extend(relativeTime);
 dayjs.extend(duration);
 
-const sliceDescription = (description) => description.length > 140 ? `${description.slice(0,138)}...` : description;
+const sliceDescription = (description) => description.length > 140 ? `${description.slice(0,139)}...` : description;
 
 const isGenres = (array) => array.length > 1;
 

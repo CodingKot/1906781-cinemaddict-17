@@ -311,6 +311,10 @@ button {
   width: 100%;
 }
 
+.film-card__controls.shake {
+  position: absolute;
+}
+
 .film-card__controls-item {
   background-color: transparent;
   background-position: center;

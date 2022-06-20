@@ -105,9 +105,9 @@ export default class ContentPresenter {
         try {
           await this.#filmsModel.updateFilm(updateType, update);
         } catch(err) {
-          this.#filmCardPresenter.get(update.id).setAborting();
+          this.#filmCardPresenter.get(update.id).setUpdateAborting();
           if(this.#mode === PopUpMode.OPEN) {
-            this.#popupPresenter.get(update.id).setAborting();
+            this.#popupPresenter.get(update.id).setUpdateAborting();
           }
         }
         break;
@@ -124,7 +124,7 @@ export default class ContentPresenter {
         try {
           await this.#commentsModel.deleteComment(updateType, update, film);
         } catch(err) {
-          this.#popupPresenter.get(film.id).setAborting();
+          this.#popupPresenter.get(film.id).setDeleteAborting();
         }
         break;
     }
@@ -214,7 +214,7 @@ export default class ContentPresenter {
 
   #renderTopRatedContainer = () => {
     render(this.#topRatedSection, this.#sectionComponent.element);
-    render (this.#topRatedHeading, this.#topRatedSection.element);
+    render(this.#topRatedHeading, this.#topRatedSection.element);
     render(this.#topRatedContainer, this.#topRatedSection.element);
   };
 
@@ -349,7 +349,7 @@ export default class ContentPresenter {
     }
     this.#removeTopRatedSection();
     this.#removeMostCommentedSection();
-    if(resetRenderedFilmCount) {
+    if(resetRenderedFilmCount && resetSortType) {
       this.#renderedFilmCount = FILMS_COUNT_PER_STEP;
     } else {
       this.#renderedFilmCount = Math.min(filmsCount, this.#renderedFilmCount);

@@ -60,6 +60,24 @@ export default class AbstractView {
       callback?.();
     }, SHAKE_ANIMATION_TIMEOUT);
   }
+
+  shakeDelete(callback, id) {
+    const targetElement = this.element.querySelector(`li[data-id = "${id}"]`);
+    targetElement.classList.add(SHAKE_CLASS_NAME);
+    setTimeout(() => {
+      targetElement.classList.remove(SHAKE_CLASS_NAME);
+      callback?.();
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  shakeUpdate(callback, className) {
+    const targetElement = this.element.querySelector(className);
+    targetElement.classList.add(SHAKE_CLASS_NAME);
+    setTimeout(() => {
+      this.element.classList.remove(SHAKE_CLASS_NAME);
+      callback?.();
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
 }
 
 /**

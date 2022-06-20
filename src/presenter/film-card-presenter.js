@@ -13,6 +13,7 @@ export default class FilmCardPresenter {
   #filmComponent = null;
   #popupPresenter = null;
   #previousState = null;
+  #controlsClass = '.film-card__controls';
 
   constructor (filmsListContainer, bodyContentContainer, changeData, popupPresenter, previousState){
     this.#bodyContentContainer = bodyContentContainer;
@@ -116,13 +117,14 @@ export default class FilmCardPresenter {
     });
   };
 
-  setAborting = () => {
-    const resetCardState = () => {
-      this.#filmComponent.updateElement({
-        isUpdating: false,
-      });
-    };
-    this.#filmComponent.shake(resetCardState);
+  #resetCardState = () => {
+    this.#filmComponent.updateElement({
+      isUpdating: false,
+    });
+  };
+
+  setUpdateAborting = () => {
+    this.#filmComponent.shakeUpdate(this.#resetCardState, this.#controlsClass);
   };
 
 }

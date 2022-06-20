@@ -10,6 +10,8 @@ export default class PopupPresenter {
   #comments = [];
   #changeData = null;
   #previousState = null;
+  #deletingComment = null;
+  #controlsClass = '.film-details__controls';
 
   constructor(bodyContentContainer, changeData, previousState){
     this.#bodyContentContainer = bodyContentContainer;
@@ -118,6 +120,7 @@ export default class PopupPresenter {
   };
 
   #handleDeleteCommentClick = (commentId) => {
+    this.#deletingComment = commentId;
     this.#previousState.set(this.#film.id, this.#popupComponent.state);
     this.#changeData(
       UserAction.DELETE_COMMENT,
@@ -157,16 +160,25 @@ export default class PopupPresenter {
     });
   };
 
+  #resetPopupState = () => {
+    this.#popupComponent.updateElement({
+      isDisabled: false,
+      isDeleting: false,
+      isSending: false,
+      isUpdating: false,
+    });
+  };
+
   setAborting = () => {
-    const resetPopupState = () => {
-      this.#popupComponent.updateElement({
-        isDisabled: false,
-        isDeleting: false,
-        isSending: false,
-        isUpdating: false,
-      });
-    };
-    this.#popupComponent.shake(resetPopupState);
+    this.#popupComponent.shake(this.#resetPopupState);
+  };
+
+  setDeleteAborting = () => {
+    this.#popupComponent.shakeDelete(this.#resetPopupState, this.#deletingComment);
+  };
+
+  setUpdateAborting = () => {
+    this.#popupComponent.shakeUpdate(this.#resetPopupState, this.#controlsClass);
   };
 
   setPreviousComment = (previous) => {

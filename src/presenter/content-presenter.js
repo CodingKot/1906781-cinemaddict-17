@@ -98,7 +98,7 @@ export default class ContentPresenter {
         this.#mode = PopUpMode.CLOSED;
         break;
       case UserAction.UPDATE_FILM:
-        this.#filmCardPresenter.get(update.id).setCardUpdating();
+        this.#setCardUpdating(update.id);
         if(this.#mode === PopUpMode.OPEN) {
           this.#popupPresenter.get(update.id).setPopupUpdating();
         }
@@ -306,6 +306,18 @@ export default class ContentPresenter {
       remove(this.#mostCommentedHeading);
       remove(this.#mostCommentedContainer);
       remove(this.#mostCommentedSection);
+    }
+  };
+
+  #setCardUpdating = (id) => {
+    if(this.#topRatedPresenter.has(id)) {
+      this.#topRatedPresenter.get(id).setCardUpdating();
+    }
+    if(this.#mostCommentedPresenter.has(id)) {
+      this.#mostCommentedPresenter.get(id).setCardUpdating();
+    }
+    if(this.#filmCardPresenter.has(id)) {
+      this.#filmCardPresenter.get(id).setCardUpdating();
     }
   };
 

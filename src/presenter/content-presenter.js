@@ -52,8 +52,8 @@ export default class ContentPresenter {
   #topRatedPresenter = new Map();
   #mostCommentedPresenter = new Map();
   #previousState = new Map();
-  #presenter = null;
   #renderedFilmCount = FILMS_COUNT_PER_STEP;
+  #prevFilmsCount = null;
   #isLoading = true;
   #mode = PopUpMode.CLOSED;
   #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
@@ -149,7 +149,7 @@ export default class ContentPresenter {
         }
         break;
       case UpdateType.MINOR:
-        this.#clearContent({resetRenderedFilmCount: true});
+        this.#clearContent();
         this.#renderContent();
         if(this.#mode === PopUpMode.OPEN) {
           this.#popupPresenter.get(data.id).init(data, this.comments);
@@ -361,7 +361,10 @@ export default class ContentPresenter {
     }
     this.#removeTopRatedSection();
     this.#removeMostCommentedSection();
-    if(resetRenderedFilmCount && resetSortType) {
+    if(filmsCount - this.#prevFilmsCount === 1 && this.#prevFilmsCount === this.#renderedFilmCount) {
+      this.#renderedFilmCount = Math.min(filmsCount, this.#renderedFilmCount) + 1;
+    }
+    if(resetRenderedFilmCount) {
       this.#renderedFilmCount = FILMS_COUNT_PER_STEP;
     } else {
       this.#renderedFilmCount = Math.min(filmsCount, this.#renderedFilmCount);
@@ -379,6 +382,7 @@ export default class ContentPresenter {
     }
     const films = this.films;
     const filmsCount = films.length;
+    this.#prevFilmsCount = filmsCount;
     this.#renderFilmsContainer();
     if(filmsCount === 0) {
       this.#renderNoFilm();
@@ -387,7 +391,8 @@ export default class ContentPresenter {
 
     this.#renderSort();
     this.#renderFilms(films.slice(0, Math.min(filmsCount, this.#renderedFilmCount)));
-    if(filmsCount > FILMS_COUNT_PER_STEP) {
+
+    if(filmsCount > this.#renderedFilmCount) {
       this.#renderShowMoreButton();
     }
     this.#renderTopRatedSection();
@@ -397,6 +402,7 @@ export default class ContentPresenter {
   #handleShowMoreButtonClick = () => {
     const filmsCount = this.films.length;
     const newRenderedFilmsCount = Math.min(filmsCount, this.#renderedFilmCount + FILMS_COUNT_PER_STEP);
+
     const films = this.films.slice(this.#renderedFilmCount, newRenderedFilmsCount);
 
     this.#renderFilms(films);

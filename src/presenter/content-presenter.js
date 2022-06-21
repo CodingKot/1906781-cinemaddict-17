@@ -333,6 +333,7 @@ export default class ContentPresenter {
     }
   };
 
+
   #renderPopup = (data, comments) => {
     if (this.#topRatedPresenter.has(data)) {
       this.#topRatedPresenter.get(data).addPopUpToPage(comments);

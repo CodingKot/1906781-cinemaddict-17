@@ -2,7 +2,7 @@ import { render, replace, remove } from '../framework/render.js';
 import FilterView from '../view/filter-view.js';
 import ProfileView from '../view/header-profiile-view.js';
 import {filter, getTitle} from '../utils/filter.js';
-import { FilterType, UpdateType } from '../const.js';
+import {FilterType, UpdateType} from '../const.js';
 
 
 export default class FilterPresenter {

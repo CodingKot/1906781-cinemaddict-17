@@ -363,7 +363,7 @@ export default class ContentPresenter {
     this.#removeTopRatedSection();
     this.#removeMostCommentedSection();
     if(filmsCount - this.#prevFilmsCount === 1 && this.#prevFilmsCount === this.#renderedFilmCount) {
-      this.#renderedFilmCount = Math.min(filmsCount, this.#renderedFilmCount) + 1;
+      this.#renderedFilmCount = filmsCount > FILMS_COUNT_PER_STEP ? Math.min(filmsCount, this.#renderedFilmCount) : filmsCount;
     }
     if(resetRenderedFilmCount) {
       this.#renderedFilmCount = FILMS_COUNT_PER_STEP;

@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { firstToUpper } from '../utils/common.js';
+import {firstToUpper} from '../utils/common.js';
 
 const createFilterItemTemplate = (filter, currentFilterType) => {
   const {type, name, count} = filter;

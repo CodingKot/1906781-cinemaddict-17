@@ -1,6 +1,6 @@
 import PopUpView from '../view/popup-view.js';
 import PopUpWithoutComments from '../view/popup-no-comments-view.js';
-import { UserAction, UpdateType } from '../const.js';
+import {UserAction, UpdateType} from '../const.js';
 import {render, replace, remove} from '../framework/render.js';
 
 export default class PopupPresenter {

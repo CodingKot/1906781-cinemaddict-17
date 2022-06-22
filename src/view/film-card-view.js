@@ -1,5 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { changeReleaseDateDisplayYears, getTimeFromMins, sliceDescription} from '../utils/film-details.js';
+import {changeReleaseDateDisplayYears, getTimeFromMins, sliceDescription} from '../utils/film-details.js';
 
 const createFilmCardTemplate = (film) => {
   const {id, comments, filmInfo, userDetails, isUpdating} = film;

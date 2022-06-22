@@ -7,12 +7,6 @@ const getRandomInteger = (a = 0, b = 1) => {
 
 const getUniqueRandomNumber = (items) =>  items.splice(getRandomInteger(0, items.length - 1), 1)[0];
 
-const geneateRandomInfo = (items) => {
-  const randomIndex = getRandomInteger(0, items.length-1);
-  return items[randomIndex];
-};
-
 const firstToUpper = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
-
-export {getRandomInteger, getUniqueRandomNumber, geneateRandomInfo, firstToUpper};
+export {getUniqueRandomNumber, firstToUpper};

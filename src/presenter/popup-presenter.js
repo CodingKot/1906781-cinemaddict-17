@@ -1,5 +1,5 @@
-import PopUpView from '../view/popup-view.js';
-import PopUpWithoutComments from '../view/popup-no-comments-view.js';
+import PopupView from '../view/popup-view.js';
+import PopupNoCommentsView from '../view/popup-no-comments-view.js';
 import {UserAction, UpdateType} from '../const.js';
 import {render, replace, remove} from '../framework/render.js';
 
@@ -24,21 +24,21 @@ export default class PopupPresenter {
     this.#comments = comments;
     const prevPopupComponent = this.#popupComponent;
     if(this.#comments === null) {
-      this.#popupComponent = new PopUpWithoutComments(film);
-      this.#addPopUpNoCommentsListeners();
+      this.#popupComponent = new PopupNoCommentsView(film);
+      this.#addPopupNoCommentsListeners();
     } else {
-      this.#popupComponent = new PopUpView(film, comments);
-      this.#addPopUpComponentListeners();
+      this.#popupComponent = new PopupView(film, comments);
+      this.#addPopupComponentListeners();
     }
     if(prevPopupComponent === null) {
-      this.#renderPopUp();
+      this.#renderPopup();
       return;
     }
     replace(this.#popupComponent, prevPopupComponent);
     remove(prevPopupComponent);
   }
 
-  #renderPopUp = () => {
+  #renderPopup = () => {
     render(this.#popupComponent, this.#bodyContentContainer);
     this.#bodyContentContainer.classList.add('hide-overflow');
     document.addEventListener('keydown', this.#escKeyDownHandler);
@@ -103,7 +103,7 @@ export default class PopupPresenter {
       });
   };
 
-  #addPopUpComponentListeners = () => {
+  #addPopupComponentListeners = () => {
     this.#popupComponent.setCloseClickHandler(this.#closePopup);
     this.#popupComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#popupComponent.setWatchedClickHandler(this.#handleWatchedClick);
@@ -112,7 +112,7 @@ export default class PopupPresenter {
     this.#popupComponent.setFormSubmitHandler(this.#handleFormSubmit);
   };
 
-  #addPopUpNoCommentsListeners = () => {
+  #addPopupNoCommentsListeners = () => {
     this.#popupComponent.setCloseClickHandler(this.#closePopup);
     this.#popupComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#popupComponent.setWatchedClickHandler(this.#handleWatchedClick);

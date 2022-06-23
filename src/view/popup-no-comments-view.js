@@ -119,7 +119,7 @@ const createPopupTemplate = (film) => {
   </section>`);
 };
 
-export default class PopUpWithoutComments extends AbstractView {
+export default class PopupNoCommentsView extends AbstractView {
   #film = null;
 
   constructor(film) {

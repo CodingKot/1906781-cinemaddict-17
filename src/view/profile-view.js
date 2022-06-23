@@ -1,8 +1,8 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {PROFILE_TITLES} from '../const.js';
+import {ProfileTitles} from '../const.js';
 
 const createProfileTemplate = (title) => {
-  if (title === PROFILE_TITLES.NO_HISTORY) {
+  if (title === ProfileTitles.NO_HISTORY) {
     return (`<section class="header__profile profile visually-hidden">
     <p class="profile__rating">Movie Buff</p>
     <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">

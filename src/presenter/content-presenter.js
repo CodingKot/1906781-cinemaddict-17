@@ -10,11 +10,11 @@ import NoFilmsView from '../view/no-films-view.js';
 import FilmsQuantityView from '../view/films-quantity-view.js';
 import FilmCardPresenter from './film-card-presenter.js';
 import ExtraView from '../view/extra-view.js';
-import ExtraContainerView from '../view/extra-container.js';
+import ExtraContainerView from '../view/extra-container-view.js';
 import ExtraHeadingView from '../view/extra-heading-view.js';
 import {getUniqueRandomNumber} from '../utils/common.js';
 import {compareRatings, compareDates, compareCommentsNumber} from '../utils/film-details.js';
-import {SortType, UpdateType, UserAction, FilterType, PopUpMode, TimeLimit, SectionHeading} from '../const.js';
+import {SortType, UpdateType, UserAction, FilterType, PopupMode, TimeLimit, SectionHeading} from '../const.js';
 
 import {render, remove, RenderPosition} from '../framework/render.js';
 import {filter} from '../utils/filter.js';
@@ -55,7 +55,7 @@ export default class ContentPresenter {
   #renderedFilmCount = FILMS_COUNT_PER_STEP;
   #prevFilmsCount = null;
   #isLoading = true;
-  #mode = PopUpMode.CLOSED;
+  #mode = PopupMode.CLOSED;
   #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   constructor(mainContentContainer, bodyContentContainer, filmsModel, commentsModel, filterModel, footerStatistics) {
@@ -95,18 +95,18 @@ export default class ContentPresenter {
         this.#commentsModel.init(updateType, update.id);
         break;
       case UserAction.CLOSE_POPUP:
-        this.#mode = PopUpMode.CLOSED;
+        this.#mode = PopupMode.CLOSED;
         break;
       case UserAction.UPDATE_FILM:
         this.#setCardUpdating(update.id);
-        if(this.#mode === PopUpMode.OPEN) {
+        if(this.#mode === PopupMode.OPEN) {
           this.#popupPresenter.get(update.id).setPopupUpdating();
         }
         try {
           await this.#filmsModel.updateFilm(updateType, update);
         } catch(err) {
           this.#filmCardPresenter.get(update.id).setUpdateAborting();
-          if(this.#mode === PopUpMode.OPEN) {
+          if(this.#mode === PopupMode.OPEN) {
             this.#popupPresenter.get(update.id).setUpdateAborting();
           }
         }
@@ -136,7 +136,7 @@ export default class ContentPresenter {
       case UpdateType.PATCH_DELETE_COMMENT:
         this.#updatePresenter(data.id, data);
         this.#updateMostCommentedSection();
-        if(this.#mode === PopUpMode.OPEN) {
+        if(this.#mode === PopupMode.OPEN) {
           this.#popupPresenter.get(data.id).init(data, this.comments);
           this.#updateToPrevious(data, this.#popupPresenter.get(data.id));
         }
@@ -144,14 +144,14 @@ export default class ContentPresenter {
       case UpdateType.PATCH_ADD_COMMENT:
         this.#updatePresenter(data.id, data);
         this.#updateMostCommentedSection();
-        if(this.#mode === PopUpMode.OPEN) {
+        if(this.#mode === PopupMode.OPEN) {
           this.#popupPresenter.get(data.id).init(data, this.comments);
         }
         break;
       case UpdateType.MINOR:
         this.#clearContent();
         this.#renderContent();
-        if(this.#mode === PopUpMode.OPEN) {
+        if(this.#mode === PopupMode.OPEN) {
           this.#popupPresenter.get(data.id).init(data, this.comments);
           this.#updateToPrevious(data, this.#popupPresenter.get(data.id));
         }
@@ -169,7 +169,7 @@ export default class ContentPresenter {
         break;
       case UpdateType.INIT_COMMENTS:
         this.#renderPopup(data, this.comments);
-        this.#mode = PopUpMode.OPEN;
+        this.#mode = PopupMode.OPEN;
         break;
       case UpdateType.DELETE_COMMENT:
         this.#filmsModel.updateFilm(UpdateType.PATCH_DELETE_COMMENT, data);

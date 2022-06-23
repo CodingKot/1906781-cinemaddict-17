@@ -51,14 +51,14 @@ const Method = {
   DELETE: 'DELETE',
 };
 
-const PROFILE_TITLES = {
+const ProfileTitles = {
   NOVICE: 'Novice',
   FAN: 'Fan',
   MOVIE_BUFF: 'Movie Buff',
-  NO_HISTORY: 'NO HISTORY',
+  NO_HISTORY: 'No History',
 };
 
-const PopUpMode = {
+const PopupMode = {
   OPEN: 'OPEN',
   CLOSED: 'CLOSED',
 };
@@ -68,4 +68,4 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
-export {FilterType, SortType, UserAction,UpdateType, NoFilmsTextType, Method, PROFILE_TITLES, PopUpMode, TimeLimit, SectionHeading};
+export {FilterType, SortType, UserAction,UpdateType, NoFilmsTextType, Method, ProfileTitles, PopupMode, TimeLimit, SectionHeading};

@@ -1,4 +1,4 @@
-import {FilterType, PROFILE_TITLES} from '../const.js';
+import {FilterType, ProfileTitles} from '../const.js';
 
 const filter = {
   [FilterType.ALL]: (films) => films,
@@ -11,13 +11,13 @@ const getTitle = (number) => {
 
   switch (true) {
     case (number >= 1 && number <= 10):
-      return PROFILE_TITLES.NOVICE;
+      return ProfileTitles.NOVICE;
     case (number >= 11 && number <= 20):
-      return PROFILE_TITLES.FAN;
+      return ProfileTitles.FAN;
     case number >= 21:
-      return PROFILE_TITLES.MOVIE_BUFF;
+      return ProfileTitles.MOVIE_BUFF;
     case number === 0:
-      return PROFILE_TITLES.NO_HISTORY;
+      return ProfileTitles.NO_HISTORY;
   }
 };
 

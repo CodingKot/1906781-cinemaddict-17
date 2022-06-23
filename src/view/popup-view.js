@@ -146,7 +146,7 @@ const createPopupTemplate = (film, filmComments, deletingComment) =>  {
 };
 
 
-export default class PopUpView extends AbstractStatefulView {
+export default class PopupView extends AbstractStatefulView {
 
   #filmComments = null;
   #deletingComment = null;
@@ -154,7 +154,7 @@ export default class PopUpView extends AbstractStatefulView {
   constructor(film, filmComments) {
     super();
     this.#filmComments = filmComments;
-    this._state = PopUpView.transformToState(film);
+    this._state = PopupView.transformToState(film);
     this.#setInnerHandlers();
   }
 
@@ -291,7 +291,7 @@ export default class PopUpView extends AbstractStatefulView {
     if (evt.metaKey && evt.keyCode === 13 || evt.ctrlKey && evt.keyCode === 13) {
       evt.preventDefault();
       const localComment = {};
-      PopUpView.transformToFilm(this._state, localComment);
+      PopupView.transformToFilm(this._state, localComment);
       this._callback.commentFormSubmit(localComment);
     }
   };
